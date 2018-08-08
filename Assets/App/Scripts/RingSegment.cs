@@ -8,18 +8,22 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshCollider))]
 public class RingSegment : MonoBehaviour {
+	private enum Side {
+		UpperInner,
+		Upper
+	}
+
 	#region Constants
 	public const int Resolution = 90;
 	public const float Height = 1.0f;
 	public const float Radius = 1.0f;
 	public const float Thickness = 2.0f;
+	public const float Slice = (Mathf.PI * 2.0f) / (float)Resolution;
 
 	private readonly Vector3 HeightOffset = new Vector3(0.0f, -Height, 0.0f);
-	private readonly int[] SliceIndices = new int[] {
-		0, 4, 1, 4, 5, 1, // top indices
-		3, 2, 6, 3, 6, 7, // bottom indices
-		1, 5, 6, 1, 6, 2, // top indices
-		4, 0, 3, 4, 3, 7, // top indices
+	private readonly int[] CapIndices = new int[] {
+		0, 1, 2, 0, 2, 3, // start cap
+		5, 4, 7, 5, 7, 6, // end cap
 	};
 	#endregion
 
@@ -27,7 +31,7 @@ public class RingSegment : MonoBehaviour {
 	[SerializeField]
 	private bool _hazard = false;
 	[SerializeField]
-	private int _span = 360;
+	private int _span = 90;
 	[SerializeField]
 	private Material _platformMaterial;
 	[SerializeField]
@@ -62,12 +66,17 @@ public class RingSegment : MonoBehaviour {
 
 	#region Methods
 	private void Awake () {
-		_meshCollider = GetComponent<MeshCollider>();
 		_meshRenderer = GetComponent<MeshRenderer>();
 		_meshFilter = gameObject.GetComponent<MeshFilter>();
 		if (_meshFilter != null) {
 			_meshFilter.sharedMesh = new Mesh();
 			_meshFilter.sharedMesh.name = "Ring";
+		}
+
+		_meshCollider = GetComponent<MeshCollider>();
+		if (_meshCollider != null) {
+			_meshCollider.sharedMesh = new Mesh();
+			_meshCollider.sharedMesh.name = "Surface";
 		}
 
 		BuildMesh();
@@ -82,98 +91,95 @@ public class RingSegment : MonoBehaviour {
 	#region Private Methods
 	private void BuildMesh () {
 		if (_meshFilter == null) { return; }
-
-		var indices = new int[_span * 24 + 12];
-		var positions = new Vector3[(_span + 1) * 4];
+		var indices = new int[(((_span + 1) * 6) * 4) + 12];
+		var positions = new Vector3[((_span + 1) * 8) + 8];
 
 		// iterate through each segment
-		SetPositionsForSlice(0, positions);
-		SetCapIndices(_span, indices);
-		for (int i = 0; i < _span; ++i) {
-			SetPositionsForSlice(i + 1, positions);
-			SetIndicesForSlice(i, indices);
-		}
+		SetSideIndices(0, indices);
+		SetSideIndices(1, indices);
+		SetSideIndices(2, indices);
+		SetSideIndices(3, indices);
+		SetPositionsForSide(0, false, false, true,  false, positions);
+		SetPositionsForSide(1, true,  false, true,  true,  positions);
+		SetPositionsForSide(2, true,  true,  false, true,  positions);
+		SetPositionsForSide(3, false, true,  false, false, positions);
+		BuildCaps(positions, indices);
 
 		// update the mesh
 		var mesh = _meshFilter.sharedMesh;
 		mesh.triangles = null; // set to NULL, so that updating the vertices doesn't cause index buffer issues
 		mesh.vertices = positions;
-		mesh.normals = CalculateNormals(positions, indices);
 		mesh.triangles = indices;
-		// mesh.RecalculateNormals();
+		mesh.RecalculateNormals();
+		BuildCollisionMesh();
+	}
+
+	private void BuildCollisionMesh () {
+		var indices = new int[(_span + 1) * 6];
+		var positions = new Vector3[(_span + 1) * 2];
+
+		// iterate through each segment
+		SetSideIndices(0, indices);
+		SetPositionsForSide(0, false, false, true,  false, positions);
+
+		// setup the mesh for the collider
+		var mesh = _meshCollider.sharedMesh;
+		mesh.triangles = null;
+		mesh.vertices = positions;
+		mesh.triangles = indices;
 		_meshCollider.sharedMesh = mesh;
 	}
 
-	private Vector3[] CalculateNormals (Vector3[] positions, int[] indices) {
-		// iterate through all triangles
-		var normals = new Vector3[positions.Length];
-		for (int i = 0; i < indices.Length / 3; ++i) {
-			int[] localIndices = {
-				indices[(i * 3) + 0],
-				indices[(i * 3) + 1],
-				indices[(i * 3) + 2],
-			};
+	private void BuildCaps (Vector3[] positions, int[] indices) {
+		int vertexOffset = positions.Length - 8;
+		int indexOffset = indices.Length - 12;
 
-			Vector3[] triangle = {
-				positions[localIndices[0]],
-				positions[localIndices[1]],
-				positions[localIndices[2]],
-			};
+		// set inner cap's positions
+		positions[vertexOffset + 0] = GetPosition(0, false, false);
+		positions[vertexOffset + 1] = GetPosition(0, true,  false);
+		positions[vertexOffset + 2] = GetPosition(0, true,  true);
+		positions[vertexOffset + 3] = GetPosition(0, false, true);
 
-			// find the triangle's normal, and add it to the affected vertex normals
-			var left = triangle[1] - triangle[0];
-			var right = triangle[2] - triangle[0];
-			var normal = Vector3.Cross(left, right);
-			normals[localIndices[0]] += normal;
-			normals[localIndices[1]] += normal;
-			normals[localIndices[2]] += normal;
-		}
+		// set outer cap's positions
+		positions[vertexOffset + 4] = GetPosition(_span, false, false);
+		positions[vertexOffset + 5] = GetPosition(_span, true,  false);
+		positions[vertexOffset + 6] = GetPosition(_span, true,  true);
+		positions[vertexOffset + 7] = GetPosition(_span, false, true);
 
-		for (int i = 0; i < normals.Length; ++i) {
-			normals[i] = Vector3.Normalize(normals[i]);
-		}
-
-		return normals;
-	}
-
-	private void SetPositionsForSlice (int index, Vector3[] positions) {
-		int startIndex = index * 4;
-		float slice = (Mathf.PI * 2.0f) / (float)Resolution;
-		float angle = (float)index * slice;
-		var unitPos = new Vector3(Mathf.Cos(angle), 0.0f, Mathf.Sin(angle));
-
-		positions[startIndex + 0] = unitPos * Radius;
-		positions[startIndex + 1] = unitPos * (Radius + Thickness);
-		positions[startIndex + 2] = (unitPos * (Radius + Thickness)) + HeightOffset;
-		positions[startIndex + 3] = (unitPos * Radius) + HeightOffset;
-	}
-
-	private void SetIndicesForSlice (int index, int[] indices) {
-		int startIndex = index * 24;
-		int offset = index * 4;
-		for (int i = 0; i < 24; ++i) {
-			indices[i + startIndex] = SliceIndices[i] + offset;
-		}
-	}
-
-	private void SetCapIndices (int span, int[] indices) {
-		int startOffset = indices.Length - 12;
-		int endOffset = span * 4;
-		var capIndices = new int[] {
-			// start cap
-			0, 1, 2, 0, 2, 3,
-			// end cap
-			1 + endOffset,
-			0 + endOffset,
-			3 + endOffset,
-			1 + endOffset,
-			3 + endOffset,
-			2 + endOffset,
-		};
-
+		// copy the indices
 		for (int i = 0; i < 12; ++i) {
-			indices[startOffset + i] = capIndices[i];
+			indices[indexOffset + i] = CapIndices[i] + vertexOffset;
 		}
+	}
+
+	private void SetSideIndices (int sideIndex, int[] indices) {
+		// set the indices
+		int vertexOffset = (_span + 1) * 2 * sideIndex;
+		int indexOffset = (_span + 1) * 6 * sideIndex;
+		for (int i = 0; i < _span; ++i) {
+			indices[indexOffset + (i * 6) + 0] = vertexOffset + (i * 2) + 0;
+			indices[indexOffset + (i * 6) + 1] = vertexOffset + (i * 2) + 2;
+			indices[indexOffset + (i * 6) + 2] = vertexOffset + (i * 2) + 3;
+			indices[indexOffset + (i * 6) + 3] = vertexOffset + (i * 2) + 0;
+			indices[indexOffset + (i * 6) + 4] = vertexOffset + (i * 2) + 3;
+			indices[indexOffset + (i * 6) + 5] = vertexOffset + (i * 2) + 1;
+		}
+	}
+
+	private void SetPositionsForSide (int index, bool startOuter, bool startLower, bool endOuter, bool endLower, Vector3[] positions) {
+		int vertexOffset = (_span + 1) * 2 * index;
+		for (int i = 0; i < (_span + 1); ++i) {
+			positions[vertexOffset + (i * 2) + 0] = GetPosition(i, startOuter, startLower);
+			positions[vertexOffset + (i * 2) + 1] = GetPosition(i, endOuter, endLower);
+		}
+	}
+
+	private Vector3 GetPosition (int index, bool outer, bool lower) {
+		float angle = (float)index * Slice;
+		float multiplier = outer ? (Radius + Thickness) : Radius;
+		Vector3 unitPosition = new Vector3(Mathf.Cos(angle), 0.0f, Mathf.Sin(angle));
+		Vector3 position = unitPosition * multiplier;
+		return lower ? (position + HeightOffset) : position;
 	}
 	#endregion
 }
