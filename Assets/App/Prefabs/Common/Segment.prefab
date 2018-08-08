@@ -19,12 +19,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4237158795699308}
-  - component: {fileID: 33894594607576880}
-  - component: {fileID: 23352020356632432}
-  - component: {fileID: 64766625832796004}
-  - component: {fileID: 114101613928829556}
+  - component: {fileID: 33496658076932660}
+  - component: {fileID: 23997405207537900}
+  - component: {fileID: 114136879344319700}
   m_Layer: 0
-  m_Name: Ring_Segment
+  m_Name: Segment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,7 +42,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &23352020356632432
+--- !u!23 &23997405207537900
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -78,28 +77,14 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!33 &33894594607576880
+--- !u!33 &33496658076932660
 MeshFilter:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1218386023243832}
   m_Mesh: {fileID: 0}
---- !u!64 &64766625832796004
-MeshCollider:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1218386023243832}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 14
-  m_SkinWidth: 0.01
-  m_Mesh: {fileID: 0}
---- !u!114 &114101613928829556
+--- !u!114 &114136879344319700
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -107,7 +92,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1218386023243832}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6faae2dcd574e443289c3fb4526971cb, type: 3}
+  m_Script: {fileID: 11500000, guid: a76290ae59f5b4040b7eea10b9cd0a1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _hazard: 0

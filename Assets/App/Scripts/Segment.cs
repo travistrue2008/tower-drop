@@ -6,19 +6,14 @@ using UnityEngine;
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
-[RequireComponent(typeof(MeshCollider))]
-public class RingSegment : MonoBehaviour {
-	private enum Side {
-		UpperInner,
-		Upper
-	}
-
+public class Segment : MonoBehaviour {
 	#region Constants
 	public const int Resolution = 90;
-	public const float Height = 1.0f;
-	public const float Radius = 1.0f;
+	public const float Height = 0.75f;
+	public const float Radius = 2.0f;
 	public const float Thickness = 2.0f;
 	public const float Slice = (Mathf.PI * 2.0f) / (float)Resolution;
+	public const string CollisionMeshName = "Collider_Surface";
 
 	private readonly Vector3 HeightOffset = new Vector3(0.0f, -Height, 0.0f);
 	private readonly int[] CapIndices = new int[] {
@@ -67,16 +62,10 @@ public class RingSegment : MonoBehaviour {
 	#region Methods
 	private void Awake () {
 		_meshRenderer = GetComponent<MeshRenderer>();
-		_meshFilter = gameObject.GetComponent<MeshFilter>();
+		_meshFilter = GetComponent<MeshFilter>();
 		if (_meshFilter != null) {
 			_meshFilter.sharedMesh = new Mesh();
 			_meshFilter.sharedMesh.name = "Ring";
-		}
-
-		_meshCollider = GetComponent<MeshCollider>();
-		if (_meshCollider != null) {
-			_meshCollider.sharedMesh = new Mesh();
-			_meshCollider.sharedMesh.name = "Surface";
 		}
 
 		BuildMesh();
@@ -89,9 +78,17 @@ public class RingSegment : MonoBehaviour {
 	#endregion
 
 	#region Private Methods
+	private void SetupMesh (Mesh mesh, string name, Vector3[] positions, int[] indices) {
+		mesh.name = name;
+		mesh.triangles = null;
+		mesh.vertices = positions;
+		mesh.triangles = indices;
+		mesh.RecalculateNormals();
+	}
+
 	private void BuildMesh () {
 		if (_meshFilter == null) { return; }
-		var indices = new int[(((_span + 1) * 6) * 4) + 12];
+		var indices = new int[((_span * 6) * 4) + 12];
 		var positions = new Vector3[((_span + 1) * 8) + 8];
 
 		// iterate through each segment
@@ -111,22 +108,45 @@ public class RingSegment : MonoBehaviour {
 		mesh.vertices = positions;
 		mesh.triangles = indices;
 		mesh.RecalculateNormals();
-		BuildCollisionMesh();
+
+		if (Application.isPlaying) {
+			BuildCollisionMesh();
+		}
 	}
 
 	private void BuildCollisionMesh () {
-		var indices = new int[(_span + 1) * 6];
-		var positions = new Vector3[(_span + 1) * 2];
+		var positions = new Vector3[_span + 2 + 8];
+		var indices = new int[_span * 3 + 12];
+		BuildCaps(positions, indices);
 
-		// iterate through each segment
-		SetSideIndices(0, indices);
-		SetPositionsForSide(0, false, false, true,  false, positions);
+		// setup positions
+		positions[0] = Vector3.zero;
+		for (int i = 1; i < positions.Length; ++i) {
+			positions[i] = GetPosition(i, true, false);
+		}
 
-		// setup the mesh for the collider
-		var mesh = _meshCollider.sharedMesh;
-		mesh.triangles = null;
-		mesh.vertices = positions;
-		mesh.triangles = indices;
+		// setup indices
+		for (int i = 0; i < _span; ++i) {
+			indices[(i * 3) + 0] = 0;
+			indices[(i * 3) + 1] = i + 1;
+			indices[(i * 3) + 2] = i;
+		}
+
+		// set the new sibling's transform
+		var obj = new GameObject(CollisionMeshName);
+		var sibling = obj.transform;
+		sibling.SetParent(transform.parent);
+		sibling.localScale = Vector3.one;
+		sibling.localPosition = Vector3.zero;
+
+		if (_meshCollider) {
+			Destroy(_meshCollider.gameObject);
+		}
+
+		// setup the mesh collider
+		var mesh = new Mesh();
+		SetupMesh(mesh, "Surface", positions, indices);
+		_meshCollider = sibling.gameObject.AddComponent<MeshCollider>();
 		_meshCollider.sharedMesh = mesh;
 	}
 
@@ -155,7 +175,7 @@ public class RingSegment : MonoBehaviour {
 	private void SetSideIndices (int sideIndex, int[] indices) {
 		// set the indices
 		int vertexOffset = (_span + 1) * 2 * sideIndex;
-		int indexOffset = (_span + 1) * 6 * sideIndex;
+		int indexOffset = _span * 6 * sideIndex;
 		for (int i = 0; i < _span; ++i) {
 			indices[indexOffset + (i * 6) + 0] = vertexOffset + (i * 2) + 0;
 			indices[indexOffset + (i * 6) + 1] = vertexOffset + (i * 2) + 2;
