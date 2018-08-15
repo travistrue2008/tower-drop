@@ -154,8 +154,13 @@ public class Segment : MonoBehaviour {
 			indices[(i * 3) + 2] = i + 1;
 		}
 
-		// set the new sibling's transform
+		// create the sibling GameObject
 		var obj = new GameObject(CollisionMeshName);
+		if (_isHazard) {
+			obj.tag = "Hazard";
+		}
+
+		// setup the sibling transform
 		var sibling = obj.transform;
 		sibling.SetParent(transform.parent);
 		sibling.localPosition = transform.localPosition;
