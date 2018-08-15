@@ -15,7 +15,7 @@ public class Segment : MonoBehaviour {
 	public const float Slice = (Mathf.PI * 2.0f) / (float)Resolution;
 	public const string CollisionMeshName = "Collider_Surface";
 
-	private readonly Vector3 HeightOffset = new Vector3(0.0f, -Height, 0.0f);
+	private readonly Vector3 HeightOffset = new Vector3(0.0f, Height, 0.0f);
 	private readonly int[] CapIndices = new int[] {
 		0, 1, 2, 0, 2, 3, // start cap
 		5, 4, 7, 5, 7, 6, // end cap
@@ -76,13 +76,6 @@ public class Segment : MonoBehaviour {
 		BuildMesh();
 	}
 
-	private IEnumerator Start () {
-		if (Application.isPlaying) {
-			yield return new WaitForSeconds(1.0f);
-			Fall();
-		}
-	}
-
 	private void OnValidate () {
 		IsHazard = _isHazard;
 		Span = _span;
@@ -97,8 +90,13 @@ public class Segment : MonoBehaviour {
 		_rigidBody = gameObject.AddComponent<Rigidbody>();
 		float angle = (transform.eulerAngles.y - (((float)_span * DegreesPerSlice) / 2.0f)) * Mathf.Deg2Rad;
 		var direction = new Vector3(Mathf.Cos(angle), 0.0f, Mathf.Sin(angle));
+		var right = Vector3.Cross(direction, Vector3.up);
+
+		// set velocities, and destroy GameObjects
 		_rigidBody.velocity = direction * FallPower;
+		_rigidBody.angularVelocity = right;
 		Destroy(gameObject, 2.0f);
+		Destroy(_meshCollider);
 	}
 	#endregion
 
@@ -144,7 +142,7 @@ public class Segment : MonoBehaviour {
 		var indices = new int[(_span + 1) * 3 + 12];
 
 		// setup positions
-		positions[0] = Vector3.zero;
+		positions[0] = HeightOffset;
 		for (int i = 1; i < positions.Length; ++i) {
 			positions[i] = GetPosition(i - 1, true, false);
 		}
@@ -160,8 +158,9 @@ public class Segment : MonoBehaviour {
 		var obj = new GameObject(CollisionMeshName);
 		var sibling = obj.transform;
 		sibling.SetParent(transform.parent);
+		sibling.localPosition = transform.localPosition;
+		sibling.localRotation = transform.localRotation;
 		sibling.localScale = Vector3.one;
-		sibling.localPosition = Vector3.zero;
 
 		if (_meshCollider) {
 			Destroy(_meshCollider.gameObject);
@@ -223,7 +222,7 @@ public class Segment : MonoBehaviour {
 		float multiplier = outer ? (Radius + Thickness) : Radius;
 		Vector3 unitPosition = new Vector3(Mathf.Cos(angle), 0.0f, Mathf.Sin(angle));
 		Vector3 position = unitPosition * multiplier;
-		return lower ? (position + HeightOffset) : position;
+		return lower ? position : (position + HeightOffset);
 	}
 	#endregion
 }

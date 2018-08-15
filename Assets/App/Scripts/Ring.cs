@@ -22,6 +22,7 @@ public class Ring : MonoBehaviour {
 	}
 
 	public void Break () {
+		// make all segments fall
 		foreach (var segment in _segments) {
 			segment.Fall();
 		}
