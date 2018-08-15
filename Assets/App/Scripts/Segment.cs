@@ -5,13 +5,13 @@ using UnityEngine;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter))]
-[RequireComponent(typeof(MeshRenderer))]
 public class Segment : MonoBehaviour {
 	#region Constants
 	public const int Resolution = 90;
-	public const float Height = 0.75f;
+	public const float Height = 1.0f;
 	public const float Radius = 2.0f;
 	public const float Thickness = 2.0f;
+	public const float FallPower = 10.0f;
 	public const float Slice = (Mathf.PI * 2.0f) / (float)Resolution;
 	public const string CollisionMeshName = "Collider_Surface";
 
@@ -24,7 +24,7 @@ public class Segment : MonoBehaviour {
 
 	#region Fields
 	[SerializeField]
-	private bool _hazard = false;
+	private bool _isHazard = false;
 	[SerializeField]
 	private int _span = 90;
 	[SerializeField]
@@ -32,21 +32,26 @@ public class Segment : MonoBehaviour {
 	[SerializeField]
 	private Material _hazardMaterial;
 
+	private Rigidbody _rigidBody = null;
 	private MeshFilter _meshFilter = null;
 	private MeshRenderer _meshRenderer = null;
 	private MeshCollider _meshCollider = null;
 	#endregion
 
 	#region Properties
-	public bool Hazard {
+	public static float DegreesPerSlice { get { return 360.0f / (float)Resolution; } }
+
+	public bool IsFalling { get { return _rigidBody != null; } }
+
+	public bool IsHazard {
 		set {
-			_hazard = value;
+			_isHazard = value;
 			if (_meshRenderer != null) {
-				_meshRenderer.material = _hazard ? _hazardMaterial : _platformMaterial;
+				_meshRenderer.material = _isHazard ? _hazardMaterial : _platformMaterial;
 			}
 		}
 
-		get { return _hazard; }
+		get { return _isHazard; }
 	}
 
 	public int Span {
@@ -59,7 +64,7 @@ public class Segment : MonoBehaviour {
 	}
 	#endregion
 
-	#region Methods
+	#region MonoBehaviour Hooks
 	private void Awake () {
 		_meshRenderer = GetComponent<MeshRenderer>();
 		_meshFilter = GetComponent<MeshFilter>();
@@ -71,9 +76,29 @@ public class Segment : MonoBehaviour {
 		BuildMesh();
 	}
 
+	private IEnumerator Start () {
+		if (Application.isPlaying) {
+			yield return new WaitForSeconds(1.0f);
+			Fall();
+		}
+	}
+
 	private void OnValidate () {
-		Hazard = _hazard;
+		IsHazard = _isHazard;
 		Span = _span;
+	}
+	#endregion
+
+	#region Public Methods
+	public void Fall () {
+		if (IsFalling) { return; }
+
+		// attach the rigid body
+		_rigidBody = gameObject.AddComponent<Rigidbody>();
+		float angle = (transform.eulerAngles.y - (((float)_span * DegreesPerSlice) / 2.0f)) * Mathf.Deg2Rad;
+		var direction = new Vector3(Mathf.Cos(angle), 0.0f, Mathf.Sin(angle));
+		_rigidBody.velocity = direction * FallPower;
+		Destroy(gameObject, 2.0f);
 	}
 	#endregion
 
@@ -116,17 +141,16 @@ public class Segment : MonoBehaviour {
 
 	private void BuildCollisionMesh () {
 		var positions = new Vector3[_span + 2 + 8];
-		var indices = new int[_span * 3 + 12];
-		BuildCaps(positions, indices);
+		var indices = new int[(_span + 1) * 3 + 12];
 
 		// setup positions
 		positions[0] = Vector3.zero;
 		for (int i = 1; i < positions.Length; ++i) {
-			positions[i] = GetPosition(i, true, false);
+			positions[i] = GetPosition(i - 1, true, false);
 		}
 
 		// setup indices
-		for (int i = 0; i < _span; ++i) {
+		for (int i = 0; i < (_span + 1); ++i) {
 			indices[(i * 3) + 0] = 0;
 			indices[(i * 3) + 1] = i + 1;
 			indices[(i * 3) + 2] = i;
