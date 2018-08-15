@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Breaker
   - Hazard
+  - Ring
   layers:
   - Default
   - TransparentFX

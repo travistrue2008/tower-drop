@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 public class Ball : MonoBehaviour {
 	#region Constants
+	public const int SlamThreshold = 4;
 	public const float MaxDropDistance = 2.0f;
 	public const float MaxRotationSpeed = 180.0f;
 
@@ -13,6 +14,8 @@ public class Ball : MonoBehaviour {
 	#endregion
 
 	#region Fields
+	[SerializeField]
+	private bool _isPlaying = true;
 	[SerializeField]
 	private Camera _camera;
 	[SerializeField]
@@ -45,6 +48,11 @@ public class Ball : MonoBehaviour {
 		}
 	}
 
+	public bool IsPlaying {
+		set { _isPlaying = value; }
+		get { return _isPlaying; }
+	}
+
 	public int Level {
 		set { _level = Mathf.Max(1, value); }
 		get { return _level; }
@@ -62,8 +70,11 @@ public class Ball : MonoBehaviour {
 	}
 
 	private void Update () {
-		float delta = -_inputController.LeftAxis.x * MaxRotationSpeed * Time.deltaTime;
-		_ringsContainer.Rotate(0.0f, delta, 0.0f);
+		// only control when the user is playing
+		if (IsPlaying) {
+			float delta = -_inputController.LeftAxis.x * MaxRotationSpeed * Time.deltaTime;
+			_ringsContainer.Rotate(0.0f, delta, 0.0f);
+		}
 
 		// check if the camera dropped too far
 		if (_camera.transform.position.y - transform.position.y > MaxDropDistance) {
@@ -75,27 +86,30 @@ public class Ball : MonoBehaviour {
 	private void OnTriggerEnter (Collider other) {
 		// check if a breaker was entered
 		if (other.gameObject.tag == "Breaker") {
-			// get the Ring component, and break
-			var ring = other.transform.parent.GetComponent<Ring>();
-			if (ring != null) {
-				ring.transform.SetParent(_discardContainer);
-				ring.Break();
-				++_numRingsBroken;
-				_score += ++_streak; // increment the streak, and then increment the score
-				_onScore.Invoke();
-			} else {
-				throw new NullReferenceException("No Ring component found on parent of GameObject tagged as 'Breakder'");
-			}
+			BreakRing(other.transform);
 		}
 	}
 
 	private void OnCollisionEnter (Collision collision) {
-		// check if a hazard ring segment was hit
-		if (collision.gameObject.tag == "Hazard") {
-			Debug.Log("The player failed the level...");
-			_rigidBody.velocity = Vector3.zero;
-		} else {
-			_rigidBody.velocity = bounce;
+		// handle based on tag
+		switch (collision.gameObject.tag) {
+			case "Hazard":
+				Debug.Log("The player failed the level...");
+				Stop();
+				break;
+
+			case "Finish":
+				Stop();
+				break;
+
+			default:
+				// check if the ring can be slammed down
+				if (_streak >= SlamThreshold) {
+					BreakRing(collision.transform);
+				}
+
+				_rigidBody.velocity = bounce;
+				break;
 		}
 
 		_streak = 0;
@@ -103,10 +117,37 @@ public class Ball : MonoBehaviour {
 	#endregion
 
 	#region Public Methods
+	public void Stop () {
+		_rigidBody.velocity = Vector3.zero;
+		_rigidBody.useGravity = false;
+		_isPlaying = false;
+	}
+
 	public void Reset () {
 		transform.position = _initialPosition;
+		_cameraPosition.y = _initialPosition.y;
+		_camera.transform.position = _cameraPosition;
+
 		_ringsContainer.eulerAngles = Vector3.zero;
 		_numRingsBroken = _streak = _score = 0;
+		_rigidBody.useGravity = true;
+		_isPlaying = true;
+	}
+	#endregion
+
+	#region Private Methods
+	private void BreakRing (Transform ringTransform) {
+		// get the Ring component, and break
+		var ring = ringTransform.parent.GetComponent<Ring>();
+		if (ring != null) {
+			ring.transform.SetParent(_discardContainer);
+			ring.Break();
+			++_numRingsBroken;
+			_score += ++_streak; // increment the streak, and then increment the score
+			_onScore.Invoke();
+		} else {
+			throw new NullReferenceException("No Ring component found on parent of GameObject tagged as 'Breakder'");
+		}
 	}
 	#endregion
 }

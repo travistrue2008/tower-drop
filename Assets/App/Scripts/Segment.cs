@@ -31,6 +31,8 @@ public class Segment : MonoBehaviour {
 	private Material _platformMaterial;
 	[SerializeField]
 	private Material _hazardMaterial;
+	[SerializeField]
+	private Material _slamMaterial;
 
 	private Rigidbody _rigidBody = null;
 	private MeshFilter _meshFilter = null;
@@ -83,8 +85,13 @@ public class Segment : MonoBehaviour {
 	#endregion
 
 	#region Public Methods
-	public void Fall () {
+	public void Fall (bool slammed = false) {
 		if (IsFalling) { return; }
+
+		// change the material if slammed
+		if (slammed) {
+			_meshRenderer.material = _slamMaterial;
+		}
 
 		// attach the rigid body
 		_rigidBody = gameObject.AddComponent<Rigidbody>();
