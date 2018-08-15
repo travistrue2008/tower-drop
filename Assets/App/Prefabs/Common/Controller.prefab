@@ -53,8 +53,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4499702964884428}
-  - component: {fileID: 114104862912443904}
-  - component: {fileID: 114753279683912410}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -140,6 +138,7 @@ GameObject:
   - component: {fileID: 135191414163170050}
   - component: {fileID: 54302649715785464}
   - component: {fileID: 96522308681901362}
+  - component: {fileID: 114293060637464202}
   - component: {fileID: 114276452904772302}
   m_Layer: 0
   m_Name: Player_Ball
@@ -695,18 +694,6 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &114104862912443904
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1226110766176264}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd8c5e7ae54fe4c4384a64c168d91224, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _debugText: {fileID: 0}
 --- !u!114 &114276452904772302
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -718,20 +705,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95600ccbc1ba64dc8af90916df37d4f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ringsContainer: {fileID: 4570074863855548}
+  _discardContainer: {fileID: 4338277850796928}
   _onBreakRing:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 114753279683912410}
-        m_MethodName: BreakRing
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: RingEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!114 &114291306108212856
 MonoBehaviour:
@@ -745,20 +723,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _passCollider: {fileID: 64719172930300448}
---- !u!114 &114753279683912410
+--- !u!114 &114293060637464202
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1226110766176264}
+  m_GameObject: {fileID: 1758971959759678}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef5ed8dbf1b4646faad01b6f2a425191, type: 3}
+  m_Script: {fileID: 11500000, guid: fd8c5e7ae54fe4c4384a64c168d91224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ball: {fileID: 114276452904772302}
-  _ringsContainer: {fileID: 4570074863855548}
-  _discardContainer: {fileID: 4338277850796928}
+  _debugText: {fileID: 0}
 --- !u!114 &114819215770602566
 MonoBehaviour:
   m_ObjectHideFlags: 1
