@@ -4,9 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[Serializable]
-public class RingEvent : UnityEvent<Ring> { }
-
 public class Ball : MonoBehaviour {
 	#region Constants
 	public const float MaxRotationSpeed = 180.0f;
@@ -17,8 +14,6 @@ public class Ball : MonoBehaviour {
 	private Transform _ringsContainer;
 	[SerializeField]
 	private Transform _discardContainer;
-	[SerializeField]
-	private RingEvent _onBreakRing = new RingEvent();
 
 	private int _score = 0;
 	private int _ringsBroken = 0;
@@ -28,8 +23,6 @@ public class Ball : MonoBehaviour {
 	#endregion
 
 	#region Properties
-	public RingEvent OnBreakRing { get { return _onBreakRing; } }
-
 	public float Progress {
 		get {
 			return (float)_ringsBroken / (float)_rings.Length;

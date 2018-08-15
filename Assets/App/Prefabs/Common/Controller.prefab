@@ -707,10 +707,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ringsContainer: {fileID: 4570074863855548}
   _discardContainer: {fileID: 4338277850796928}
-  _onBreakRing:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: RingEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!114 &114291306108212856
 MonoBehaviour:
   m_ObjectHideFlags: 1
