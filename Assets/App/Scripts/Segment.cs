@@ -17,8 +17,8 @@ public class Segment : MonoBehaviour {
 
 	private readonly Vector3 HeightOffset = new Vector3(0.0f, Height, 0.0f);
 	private readonly int[] CapIndices = new int[] {
-		0, 1, 2, 0, 2, 3, // start cap
-		5, 4, 7, 5, 7, 6, // end cap
+		0, 2, 1, 0, 3, 2, // start cap
+		5, 7, 4, 5, 6, 7, // end cap
 	};
 	#endregion
 
@@ -88,8 +88,8 @@ public class Segment : MonoBehaviour {
 
 		// attach the rigid body
 		_rigidBody = gameObject.AddComponent<Rigidbody>();
-		float angle = (transform.eulerAngles.y - (((float)_span * DegreesPerSlice) / 2.0f)) * Mathf.Deg2Rad;
-		var direction = new Vector3(Mathf.Cos(angle), 0.0f, Mathf.Sin(angle));
+		float angle = ((((float)_span * DegreesPerSlice) / 2.0f) + transform.eulerAngles.y) * Mathf.Deg2Rad;
+		var direction = new Vector3(Mathf.Cos(angle), 0.0f, -Mathf.Sin(angle));
 		var right = Vector3.Cross(direction, Vector3.up);
 
 		// set velocities, and destroy GameObjects
@@ -150,8 +150,8 @@ public class Segment : MonoBehaviour {
 		// setup indices
 		for (int i = 0; i < (_span + 1); ++i) {
 			indices[(i * 3) + 0] = 0;
-			indices[(i * 3) + 1] = i + 1;
-			indices[(i * 3) + 2] = i;
+			indices[(i * 3) + 1] = i;
+			indices[(i * 3) + 2] = i + 1;
 		}
 
 		// set the new sibling's transform
@@ -201,11 +201,11 @@ public class Segment : MonoBehaviour {
 		int indexOffset = _span * 6 * sideIndex;
 		for (int i = 0; i < _span; ++i) {
 			indices[indexOffset + (i * 6) + 0] = vertexOffset + (i * 2) + 0;
-			indices[indexOffset + (i * 6) + 1] = vertexOffset + (i * 2) + 2;
-			indices[indexOffset + (i * 6) + 2] = vertexOffset + (i * 2) + 3;
+			indices[indexOffset + (i * 6) + 1] = vertexOffset + (i * 2) + 3;
+			indices[indexOffset + (i * 6) + 2] = vertexOffset + (i * 2) + 2;
 			indices[indexOffset + (i * 6) + 3] = vertexOffset + (i * 2) + 0;
-			indices[indexOffset + (i * 6) + 4] = vertexOffset + (i * 2) + 3;
-			indices[indexOffset + (i * 6) + 5] = vertexOffset + (i * 2) + 1;
+			indices[indexOffset + (i * 6) + 4] = vertexOffset + (i * 2) + 1;
+			indices[indexOffset + (i * 6) + 5] = vertexOffset + (i * 2) + 3;
 		}
 	}
 
@@ -220,7 +220,7 @@ public class Segment : MonoBehaviour {
 	private Vector3 GetPosition (int index, bool outer, bool lower) {
 		float angle = (float)index * Slice;
 		float multiplier = outer ? (Radius + Thickness) : Radius;
-		Vector3 unitPosition = new Vector3(Mathf.Cos(angle), 0.0f, Mathf.Sin(angle));
+		Vector3 unitPosition = new Vector3(Mathf.Cos(angle), 0.0f, -Mathf.Sin(angle));
 		Vector3 position = unitPosition * multiplier;
 		return lower ? position : (position + HeightOffset);
 	}

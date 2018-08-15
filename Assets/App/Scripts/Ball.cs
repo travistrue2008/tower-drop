@@ -4,16 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+[Serializable]
+public class RingEvent : UnityEvent<Ring> { }
+
 public class Ball : MonoBehaviour {
 	#region Fields
 	[SerializeField]
-	private UnityEvent _onCollide = new UnityEvent();
+	private RingEvent _onBreakRing = new RingEvent();
 
 	private Rigidbody _rigidBody;
 	#endregion
 
 	#region Properties
-	public UnityEvent OnCollide { get { return _onCollide; } }
+	public RingEvent OnBreakRing { get { return _onBreakRing; } }
 	#endregion
 
 	#region MonoBehaviour Hooks
@@ -26,13 +29,16 @@ public class Ball : MonoBehaviour {
 		if (other.gameObject.tag == "Breaker") {
 			// get the Ring component, and break
 			var ring = other.transform.parent.GetComponent<Ring>();
-			ring.Break();
+			if (ring != null) {
+				_onBreakRing.Invoke(ring);
+			} else {
+				throw new NullReferenceException("No Ring component found on parent of GameObject tagged as 'Breakder'");
+			}
 		}
 	}
 
 	private void OnCollisionEnter (Collision collision) {
 		_rigidBody.velocity = new Vector3(0.0f, 6.0f, 0.0f);
-		_onCollide.Invoke();
 	}
 	#endregion
 }
