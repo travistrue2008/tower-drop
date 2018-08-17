@@ -67,6 +67,10 @@ public class Ball : MonoBehaviour {
 		_rigidBody = GetComponent<Rigidbody>();
 		_inputController = GetComponent<InputController>();
 		_rings = _ringsContainer.GetComponentsInChildren<Ring>();
+
+		// HACK: the ring container needs to be transformed, or the ball will go right through the collider
+		_ringsContainer.Rotate(0.0f, 1.0f, 0.0f);
+		_ringsContainer.Rotate(0.0f, 0.0f, 0.0f);
 	}
 
 	private void Update () {
@@ -84,35 +88,41 @@ public class Ball : MonoBehaviour {
 	}
 
 	private void OnTriggerEnter (Collider other) {
+		Debug.Log($"OnTriggerEnter: {other.gameObject.tag}");
+
 		// check if a burst mesh was entered
 		if (other.gameObject.tag == "Burst") {
-			BurstRing(other.transform);
+			var ring = other.transform.parent.GetComponent<Ring>();
+			BurstRing(ring);
 		}
 	}
 
 	private void OnCollisionEnter (Collision collision) {
-		// handle based on tag
-		switch (collision.gameObject.tag) {
-			case "Hazard":
-				Debug.Log("The player failed the level...");
-				Stop();
-				break;
+		Debug.Log("OnCollisionEnter()");
+		_streak = 0;
 
-			case "Finish":
-				Stop();
-				break;
-
-			default:
-				// check if the ring can be slammed down
-				if (_streak >= SlamThreshold) {
-					BurstRing(collision.transform);
-				}
-
-				_rigidBody.velocity = bounce;
-				break;
+		// check if the finish ring was reached
+		if (collision.gameObject.tag == "Finish") {
+			Stop();
+			return;
 		}
 
-		_streak = 0;
+		// get the segment
+		var segment = collision.transform.GetComponent<Segment>();
+		if (segment != null) {
+			// check if the player landed on a hazard
+			if (segment.IsHazard) {
+				Debug.Log("Player has failed");
+				Stop();
+			} else if (_streak >= SlamThreshold) { // check if the player can slam through the ring
+				Debug.Log("STREAK");
+				BurstRing(segment.ParentRing);
+			} else {
+				_rigidBody.velocity = bounce;
+			}
+		} else {
+			throw new NullReferenceException("No Segment component attached to GameObject");
+		}
 	}
 	#endregion
 
@@ -136,18 +146,13 @@ public class Ball : MonoBehaviour {
 	#endregion
 
 	#region Private Methods
-	private void BurstRing (Transform ringTransform) {
+	private void BurstRing (Ring ring) {
 		// get the Ring component, and burst
-		var ring = ringTransform.parent.GetComponent<Ring>();
-		if (ring != null) {
-			ring.transform.SetParent(_discardContainer);
-			ring.Burst();
-			++_numRingsBroken;
-			_score += ++_streak; // increment the streak, and then increment the score
-			_onScore.Invoke();
-		} else {
-			throw new NullReferenceException("No Ring component found on parent of GameObject tagged as 'Burst'");
-		}
+		ring.transform.SetParent(_discardContainer);
+		ring.Burst();
+		++_numRingsBroken;
+		_score += ++_streak; // increment the streak, and then increment the score
+		_onScore.Invoke();
 	}
 	#endregion
 }

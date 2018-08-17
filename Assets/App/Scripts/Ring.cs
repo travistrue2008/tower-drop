@@ -5,20 +5,13 @@ using UnityEngine;
 
 public class Ring : MonoBehaviour {
 	#region Fields
-	[SerializeField]
-	private Collider _passCollider;
-
 	private Segment[] _segments;
 	#endregion
 
 	#region MonoBehaviour Hooks
 	private void Awake () {
 		_segments = GetComponentsInChildren<Segment>();
-
-		// make sure _passCollider is set
-		if (_passCollider == null) {
-			throw new NullReferenceException("_passCollider not set");
-		}
+		ValidateBurstChild();
 	}
 
 	public void Burst (bool slam = false) {
@@ -26,6 +19,16 @@ public class Ring : MonoBehaviour {
 		foreach (var segment in _segments) {
 			segment.Fall(slam);
 		}
+	}
+	#endregion
+
+	#region Private Methods
+	private void ValidateBurstChild () {
+		foreach (Transform child in transform) {
+			if (child.gameObject.tag == "Burst") { return; }
+		}
+
+		throw new NullReferenceException("No child GameObject tagged as 'Burst' found");
 	}
 	#endregion
 }

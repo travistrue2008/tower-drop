@@ -16,7 +16,7 @@ public class Segment : MonoBehaviour {
 	public const float Slice = (Mathf.PI * 2.0f) / (float)Resolution;
 	public const string MeshName = "Surface";
 
-	private readonly Vector3 HeightOffset = new Vector3(0.0f, Height, 0.0f);
+	private readonly Vector3 HeightOffset = new Vector3(0.0f, -Height, 0.0f);
 	private readonly int[] CapIndices = new int[] {
 		0, 1, 2, 0, 2, 3, // start cap
 		5, 4, 7, 5, 7, 6, // end cap
@@ -45,6 +45,7 @@ public class Segment : MonoBehaviour {
 	public static float DegreesPerSlice { get { return 360.0f / (float)Resolution; } }
 
 	public bool IsFalling { get { return _rigidBody != null; } }
+	public Ring ParentRing { get { return transform.GetComponent<Ring>(); } }
 
 	public bool IsHazard {
 		set {
@@ -104,8 +105,8 @@ public class Segment : MonoBehaviour {
 		// set velocities, and destroy GameObjects
 		_rigidBody.velocity = direction * FallPower;
 		_rigidBody.angularVelocity = right;
+		_meshCollider.enabled = false;
 		Destroy(gameObject, 2.0f);
-		Destroy(_meshCollider);
 	}
 	#endregion
 
@@ -133,17 +134,17 @@ public class Segment : MonoBehaviour {
 
 	private void SetupCaps (Vector3[] positions, int[] indices) {
 		positions[0] = GetPosition(0, false);     // start-upper-rim
-		positions[1] = HeightOffset;              // start-upper-middle
-		positions[2] = Vector3.zero;              // start-lower-middle
+		positions[1] = Vector3.zero;              // start-upper-middle
+		positions[2] = HeightOffset;              // start-lower-middle
 		positions[3] = GetPosition(0, true);      // start-lower-rim
 
 		positions[4] = GetPosition(_span, false); // end-upper-rim
-		positions[5] = HeightOffset;              // end-upper-middle
-		positions[6] = Vector3.zero;              // end-lower-middle
+		positions[5] = Vector3.zero;              // end-upper-middle
+		positions[6] = HeightOffset;              // end-lower-middle
 		positions[7] = GetPosition(_span, true);  // end-lower-rim
 
-		positions[8] = HeightOffset;              // upper-middle
-		positions[9] = Vector3.zero;              // lower-middle
+		positions[8] = Vector3.zero;              // upper-middle
+		positions[9] = HeightOffset;              // lower-middle
 		Array.Copy(CapIndices, indices, CapIndices.Length);
 	}
 
@@ -186,7 +187,7 @@ public class Segment : MonoBehaviour {
 		float angle = (float)index * Slice;
 		var unitPosition = new Vector3(Mathf.Cos(angle), 0.0f, -Mathf.Sin(angle));
 		var position = unitPosition * Radius;
-		return lower ? position : (position + HeightOffset);
+		return lower ? (position + HeightOffset) : position;
 	}
 	#endregion
 }
