@@ -7,8 +7,6 @@ public class Ring : MonoBehaviour {
 	#region Fields
 	[SerializeField]
 	private Collider _passCollider;
-	[SerializeField]
-	private Material _slamMaterial;
 
 	private Segment[] _segments;
 	#endregion
@@ -23,7 +21,7 @@ public class Ring : MonoBehaviour {
 		}
 	}
 
-	public void Break (bool slam = false) {
+	public void Burst (bool slam = false) {
 		// make all segments fall
 		foreach (var segment in _segments) {
 			segment.Fall(slam);

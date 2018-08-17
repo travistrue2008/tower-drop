@@ -84,9 +84,9 @@ public class Ball : MonoBehaviour {
 	}
 
 	private void OnTriggerEnter (Collider other) {
-		// check if a breaker was entered
-		if (other.gameObject.tag == "Breaker") {
-			BreakRing(other.transform);
+		// check if a burst mesh was entered
+		if (other.gameObject.tag == "Burst") {
+			BurstRing(other.transform);
 		}
 	}
 
@@ -105,7 +105,7 @@ public class Ball : MonoBehaviour {
 			default:
 				// check if the ring can be slammed down
 				if (_streak >= SlamThreshold) {
-					BreakRing(collision.transform);
+					BurstRing(collision.transform);
 				}
 
 				_rigidBody.velocity = bounce;
@@ -136,17 +136,17 @@ public class Ball : MonoBehaviour {
 	#endregion
 
 	#region Private Methods
-	private void BreakRing (Transform ringTransform) {
-		// get the Ring component, and break
+	private void BurstRing (Transform ringTransform) {
+		// get the Ring component, and burst
 		var ring = ringTransform.parent.GetComponent<Ring>();
 		if (ring != null) {
 			ring.transform.SetParent(_discardContainer);
-			ring.Break();
+			ring.Burst();
 			++_numRingsBroken;
 			_score += ++_streak; // increment the streak, and then increment the score
 			_onScore.Invoke();
 		} else {
-			throw new NullReferenceException("No Ring component found on parent of GameObject tagged as 'Breakder'");
+			throw new NullReferenceException("No Ring component found on parent of GameObject tagged as 'Burst'");
 		}
 	}
 	#endregion

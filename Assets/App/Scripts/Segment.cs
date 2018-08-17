@@ -5,20 +5,21 @@ using UnityEngine;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(MeshCollider))]
+[RequireComponent(typeof(MeshRenderer))]
 public class Segment : MonoBehaviour {
 	#region Constants
 	public const int Resolution = 90;
 	public const float Height = 1.0f;
-	public const float Radius = 2.0f;
-	public const float Thickness = 2.0f;
+	public const float Radius = 4.0f;
 	public const float FallPower = 10.0f;
 	public const float Slice = (Mathf.PI * 2.0f) / (float)Resolution;
-	public const string CollisionMeshName = "Collider_Surface";
+	public const string MeshName = "Surface";
 
 	private readonly Vector3 HeightOffset = new Vector3(0.0f, Height, 0.0f);
 	private readonly int[] CapIndices = new int[] {
-		0, 2, 1, 0, 3, 2, // start cap
-		5, 7, 4, 5, 6, 7, // end cap
+		0, 1, 2, 0, 2, 3, // start cap
+		5, 4, 7, 5, 7, 6, // end cap
 	};
 	#endregion
 
@@ -69,12 +70,13 @@ public class Segment : MonoBehaviour {
 	#region MonoBehaviour Hooks
 	private void Awake () {
 		_meshRenderer = GetComponent<MeshRenderer>();
+		_meshCollider = GetComponent<MeshCollider>();
 		_meshFilter = GetComponent<MeshFilter>();
-		if (_meshFilter != null) {
-			_meshFilter.sharedMesh = new Mesh();
-			_meshFilter.sharedMesh.name = "Ring";
-		}
 
+		// build the mesh
+		var mesh = new Mesh();
+		mesh.name = MeshName;
+		_meshFilter.sharedMesh = _meshCollider.sharedMesh = mesh;
 		BuildMesh();
 	}
 
@@ -108,132 +110,82 @@ public class Segment : MonoBehaviour {
 	#endregion
 
 	#region Private Methods
-	private void SetupMesh (Mesh mesh, string name, Vector3[] positions, int[] indices) {
-		mesh.name = name;
-		mesh.triangles = null;
-		mesh.vertices = positions;
-		mesh.triangles = indices;
-		mesh.RecalculateNormals();
-	}
-
 	private void BuildMesh () {
 		if (_meshFilter == null) { return; }
-		var indices = new int[((_span * 6) * 4) + 12];
-		var positions = new Vector3[((_span + 1) * 8) + 8];
+		var mesh = _meshFilter.sharedMesh;
+		var indices = new int[(_span * 12) + CapIndices.Length];
+		var positions = new Vector3[((_span + 1) * 4) + 10]; // each side needs its own set of vertices for decent lighting
 
-		// iterate through each segment
-		SetSideIndices(0, indices);
-		SetSideIndices(1, indices);
-		SetSideIndices(2, indices);
-		SetSideIndices(3, indices);
-		SetPositionsForSide(0, false, false, true,  false, positions);
-		SetPositionsForSide(1, true,  false, true,  true,  positions);
-		SetPositionsForSide(2, true,  true,  false, true,  positions);
-		SetPositionsForSide(3, false, true,  false, false, positions);
-		BuildCaps(positions, indices);
+		// setup vertex positions
+		SetupCaps(positions, indices);
+		SetPositionsForRim(0, false, positions);
+		SetPositionsForRim(1, true, positions);
+		SetPositionsForRim(2, false, positions);
+		SetPositionsForRim(3, true, positions);
+		SetIndices(indices);
 
 		// update the mesh
-		var mesh = _meshFilter.sharedMesh;
-		mesh.triangles = null; // set to NULL, so that updating the vertices doesn't cause index buffer issues
+		mesh.Clear();
 		mesh.vertices = positions;
 		mesh.triangles = indices;
 		mesh.RecalculateNormals();
-
-		if (Application.isPlaying) {
-			BuildCollisionMesh();
-		}
 	}
 
-	private void BuildCollisionMesh () {
-		var positions = new Vector3[_span + 2 + 8];
-		var indices = new int[(_span + 1) * 3 + 12];
+	private void SetupCaps (Vector3[] positions, int[] indices) {
+		positions[0] = GetPosition(0, false);     // start-upper-rim
+		positions[1] = HeightOffset;              // start-upper-middle
+		positions[2] = Vector3.zero;              // start-lower-middle
+		positions[3] = GetPosition(0, true);      // start-lower-rim
 
-		// setup positions
-		positions[0] = HeightOffset;
-		for (int i = 1; i < positions.Length; ++i) {
-			positions[i] = GetPosition(i - 1, true, false);
-		}
+		positions[4] = GetPosition(_span, false); // end-upper-rim
+		positions[5] = HeightOffset;              // end-upper-middle
+		positions[6] = Vector3.zero;              // end-lower-middle
+		positions[7] = GetPosition(_span, true);  // end-lower-rim
 
-		// setup indices
+		positions[8] = HeightOffset;              // upper-middle
+		positions[9] = Vector3.zero;              // lower-middle
+		Array.Copy(CapIndices, indices, CapIndices.Length);
+	}
+
+	private void SetPositionsForRim (int index, bool lower, Vector3[] positions) {
+		int vertexOffset = ((_span + 1) * index) + 10;
 		for (int i = 0; i < (_span + 1); ++i) {
-			indices[(i * 3) + 0] = 0;
-			indices[(i * 3) + 1] = i;
-			indices[(i * 3) + 2] = i + 1;
-		}
-
-		// create the sibling GameObject
-		var obj = new GameObject(CollisionMeshName);
-		if (_isHazard) {
-			obj.tag = "Hazard";
-		}
-
-		// setup the sibling transform
-		var sibling = obj.transform;
-		sibling.SetParent(transform.parent);
-		sibling.localPosition = transform.localPosition;
-		sibling.localRotation = transform.localRotation;
-		sibling.localScale = Vector3.one;
-
-		if (_meshCollider) {
-			Destroy(_meshCollider.gameObject);
-		}
-
-		// setup the mesh collider
-		var mesh = new Mesh();
-		SetupMesh(mesh, "Surface", positions, indices);
-		_meshCollider = sibling.gameObject.AddComponent<MeshCollider>();
-		_meshCollider.sharedMesh = mesh;
-	}
-
-	private void BuildCaps (Vector3[] positions, int[] indices) {
-		int vertexOffset = positions.Length - 8;
-		int indexOffset = indices.Length - 12;
-
-		// set inner cap's positions
-		positions[vertexOffset + 0] = GetPosition(0, false, false);
-		positions[vertexOffset + 1] = GetPosition(0, true,  false);
-		positions[vertexOffset + 2] = GetPosition(0, true,  true);
-		positions[vertexOffset + 3] = GetPosition(0, false, true);
-
-		// set outer cap's positions
-		positions[vertexOffset + 4] = GetPosition(_span, false, false);
-		positions[vertexOffset + 5] = GetPosition(_span, true,  false);
-		positions[vertexOffset + 6] = GetPosition(_span, true,  true);
-		positions[vertexOffset + 7] = GetPosition(_span, false, true);
-
-		// copy the indices
-		for (int i = 0; i < 12; ++i) {
-			indices[indexOffset + i] = CapIndices[i] + vertexOffset;
+			positions[i + vertexOffset] = GetPosition(i, lower);
 		}
 	}
 
-	private void SetSideIndices (int sideIndex, int[] indices) {
-		// set the indices
-		int vertexOffset = (_span + 1) * 2 * sideIndex;
-		int indexOffset = _span * 6 * sideIndex;
+	private void SetIndices (int[] indices) {
+		int bottomVertexOffset = _span + 11;
+		int bottomIndexOffset = (_span * 3) + CapIndices.Length;
+		int rimVertexOffset = ((_span + 1) * 2) + 10;
+		int rimIndexOffset = (_span * 6) + CapIndices.Length;
+
+		// iterate through each slice
 		for (int i = 0; i < _span; ++i) {
-			indices[indexOffset + (i * 6) + 0] = vertexOffset + (i * 2) + 0;
-			indices[indexOffset + (i * 6) + 1] = vertexOffset + (i * 2) + 3;
-			indices[indexOffset + (i * 6) + 2] = vertexOffset + (i * 2) + 2;
-			indices[indexOffset + (i * 6) + 3] = vertexOffset + (i * 2) + 0;
-			indices[indexOffset + (i * 6) + 4] = vertexOffset + (i * 2) + 1;
-			indices[indexOffset + (i * 6) + 5] = vertexOffset + (i * 2) + 3;
+			// top
+			indices[CapIndices.Length + (i * 3) + 0] = 8;
+			indices[CapIndices.Length + (i * 3) + 1] = i + 10;
+			indices[CapIndices.Length + (i * 3) + 2] = i + 11;
+
+			// bottom
+			indices[bottomIndexOffset + (i * 3) + 0] = 9;
+			indices[bottomIndexOffset + (i * 3) + 1] = bottomVertexOffset + i + 1;
+			indices[bottomIndexOffset + (i * 3) + 2] = bottomVertexOffset + i;
+
+			// rim
+			indices[rimIndexOffset + (i * 6) + 0] = rimVertexOffset + i;
+			indices[rimIndexOffset + (i * 6) + 1] = rimVertexOffset + i + (_span + 1);
+			indices[rimIndexOffset + (i * 6) + 2] = rimVertexOffset + i + 1;
+			indices[rimIndexOffset + (i * 6) + 3] = rimVertexOffset + i + 1;
+			indices[rimIndexOffset + (i * 6) + 4] = rimVertexOffset + i + (_span + 1);
+			indices[rimIndexOffset + (i * 6) + 5] = rimVertexOffset + i + (_span + 2);
 		}
 	}
 
-	private void SetPositionsForSide (int index, bool startOuter, bool startLower, bool endOuter, bool endLower, Vector3[] positions) {
-		int vertexOffset = (_span + 1) * 2 * index;
-		for (int i = 0; i < (_span + 1); ++i) {
-			positions[vertexOffset + (i * 2) + 0] = GetPosition(i, startOuter, startLower);
-			positions[vertexOffset + (i * 2) + 1] = GetPosition(i, endOuter, endLower);
-		}
-	}
-
-	private Vector3 GetPosition (int index, bool outer, bool lower) {
+	private Vector3 GetPosition (int index, bool lower) {
 		float angle = (float)index * Slice;
-		float multiplier = outer ? (Radius + Thickness) : Radius;
-		Vector3 unitPosition = new Vector3(Mathf.Cos(angle), 0.0f, -Mathf.Sin(angle));
-		Vector3 position = unitPosition * multiplier;
+		var unitPosition = new Vector3(Mathf.Cos(angle), 0.0f, -Mathf.Sin(angle));
+		var position = unitPosition * Radius;
 		return lower ? position : (position + HeightOffset);
 	}
 	#endregion
