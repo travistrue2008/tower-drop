@@ -14,6 +14,7 @@ public class Segment : MonoBehaviour {
 	public const float Radius = 4.0f;
 	public const float FallPower = 10.0f;
 	public const float Slice = (Mathf.PI * 2.0f) / (float)Resolution;
+	public static float DegreesPerSlice = 360.0f / (float)Resolution;
 	public const string MeshName = "Surface";
 
 	private readonly Vector3 HeightOffset = new Vector3(0.0f, -Height, 0.0f);
@@ -42,8 +43,6 @@ public class Segment : MonoBehaviour {
 	#endregion
 
 	#region Properties
-	public static float DegreesPerSlice { get { return 360.0f / (float)Resolution; } }
-
 	public bool IsFalling { get { return _rigidBody != null; } }
 	public Ring ParentRing { get { return transform.GetComponent<Ring>(); } }
 

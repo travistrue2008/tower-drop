@@ -88,8 +88,6 @@ public class Ball : MonoBehaviour {
 	}
 
 	private void OnTriggerEnter (Collider other) {
-		Debug.Log($"OnTriggerEnter: {other.gameObject.tag}");
-
 		// check if a burst mesh was entered
 		if (other.gameObject.tag == "Burst") {
 			var ring = other.transform.parent.GetComponent<Ring>();
@@ -98,7 +96,6 @@ public class Ball : MonoBehaviour {
 	}
 
 	private void OnCollisionEnter (Collision collision) {
-		Debug.Log("OnCollisionEnter()");
 		_streak = 0;
 
 		// check if the finish ring was reached
