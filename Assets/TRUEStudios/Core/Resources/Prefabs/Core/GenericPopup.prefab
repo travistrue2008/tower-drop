@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 222586663932477788}
   - component: {fileID: 114464135461424526}
   - component: {fileID: 114833903494341576}
-  m_Layer: 30
+  m_Layer: 31
   m_Name: GenericPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 224287553087730664}
   - component: {fileID: 222810564150615172}
   - component: {fileID: 114389719489097024}
-  m_Layer: 30
+  m_Layer: 31
   m_Name: Label_Message
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58,7 +58,7 @@ GameObject:
   - component: {fileID: 222386702401372222}
   - component: {fileID: 114903746031769626}
   - component: {fileID: 114050159254426176}
-  m_Layer: 30
+  m_Layer: 31
   m_Name: Frame_Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,7 +75,7 @@ GameObject:
   - component: {fileID: 224502401393767868}
   - component: {fileID: 222490891944700138}
   - component: {fileID: 114370317953670148}
-  m_Layer: 30
+  m_Layer: 31
   m_Name: Label_Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}

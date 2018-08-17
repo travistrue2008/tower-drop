@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+using TRUEStudios.State;
+
 public class Ball : MonoBehaviour {
 	#region Constants
 	public const int SlamThreshold = 4;
-	public const float MaxDropDistance = 2.0f;
+	public const float MaxDropDistance = 1.0f;
 	public const float MaxRotationSpeed = 180.0f;
 
-	public readonly Vector3 bounce = new Vector3(0.0f, 6.0f, 0.0f);
+	public readonly Vector3 Bounce = new Vector3(0.0f, 4.2f, 0.0f);
 	#endregion
 
 	#region Fields
@@ -22,6 +24,10 @@ public class Ball : MonoBehaviour {
 	private Transform _ringsContainer;
 	[SerializeField]
 	private Transform _discardContainer;
+	[SerializeField]
+	private Popup _failPopupPrefab;
+	[SerializeField]
+	private Popup _completedPopupPrefab;
 	[SerializeField]
 	private UnityEvent _onScore = new UnityEvent();
 
@@ -70,12 +76,12 @@ public class Ball : MonoBehaviour {
 
 		// HACK: the ring container needs to be transformed, or the ball will go right through the collider
 		_ringsContainer.Rotate(0.0f, 1.0f, 0.0f);
-		_ringsContainer.Rotate(0.0f, 0.0f, 0.0f);
+		_ringsContainer.Rotate(0.0f, -1.0f, 0.0f);
 	}
 
 	private void Update () {
 		// only control when the user is playing
-		if (IsPlaying) {
+		if (_isPlaying) {
 			float delta = -_inputController.LeftAxis.x * MaxRotationSpeed * Time.deltaTime;
 			_ringsContainer.Rotate(0.0f, delta, 0.0f);
 		}
@@ -91,16 +97,14 @@ public class Ball : MonoBehaviour {
 		// check if a burst mesh was entered
 		if (other.gameObject.tag == "Burst") {
 			var ring = other.transform.parent.GetComponent<Ring>();
-			BurstRing(ring);
+			BurstRing(ring, false);
 		}
 	}
 
 	private void OnCollisionEnter (Collision collision) {
-		_streak = 0;
-
 		// check if the finish ring was reached
 		if (collision.gameObject.tag == "Finish") {
-			Stop();
+			FinishLevel();
 			return;
 		}
 
@@ -109,14 +113,21 @@ public class Ball : MonoBehaviour {
 		if (segment != null) {
 			// check if the player landed on a hazard
 			if (segment.IsHazard) {
-				Debug.Log("Player has failed");
-				Stop();
-			} else if (_streak >= SlamThreshold) { // check if the player can slam through the ring
-				Debug.Log("STREAK");
-				BurstRing(segment.ParentRing);
-			} else {
-				_rigidBody.velocity = bounce;
+				FailLevel();
+				return;
 			}
+			
+			// check if the player can slam through the ring
+			if (_streak >= SlamThreshold) {
+				BurstRing(segment.ParentRing, true);
+			}
+
+			// don't bounce if not playing anymore
+			if (_isPlaying) {
+				_rigidBody.velocity = Bounce;
+			}
+
+			_streak = 0;
 		} else {
 			throw new NullReferenceException("No Segment component attached to GameObject");
 		}
@@ -143,13 +154,33 @@ public class Ball : MonoBehaviour {
 	#endregion
 
 	#region Private Methods
-	private void BurstRing (Ring ring) {
+	private void BurstRing (Ring ring, bool slam) {
 		// get the Ring component, and burst
 		ring.transform.SetParent(_discardContainer);
-		ring.Burst();
+		ring.Burst(slam);
 		++_numRingsBroken;
 		_score += ++_streak; // increment the streak, and then increment the score
 		_onScore.Invoke();
+	}
+
+	private void FailLevel () {
+		Stop();
+		var popup = Services.Get<PopupService>().PushPopup<Popup>(_failPopupPrefab);
+		popup.OnClose.AddListener(OnFailLevel);
+	}
+
+	private void FinishLevel () {
+		Stop();
+		var popup = Services.Get<PopupService>().PushPopup<Popup>(_completedPopupPrefab);
+		popup.OnClose.AddListener(OnNextLevel);
+	}
+
+	private void OnNextLevel () {
+		Debug.Log("OnNextLevel()");
+	}
+
+	private void OnFailLevel () {
+		Debug.Log("OnFailLevel()");
 	}
 	#endregion
 }

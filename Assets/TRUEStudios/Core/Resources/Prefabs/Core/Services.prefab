@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 22306196}
   - component: {fileID: 11412080}
   - component: {fileID: 11407060}
-  m_Layer: 30
+  m_Layer: 31
   m_Name: Canvas_Popup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26,7 +26,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 22452282}
-  m_Layer: 30
+  m_Layer: 31
   m_Name: Container_Stack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 445840}
   - component: {fileID: 2074414}
-  m_Layer: 30
+  m_Layer: 31
   m_Name: Camera_Popup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76,7 +76,7 @@ GameObject:
   - component: {fileID: 22461600}
   - component: {fileID: 22222332}
   - component: {fileID: 11449974}
-  m_Layer: 30
+  m_Layer: 31
   m_Name: Blocker_Stack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 22421334}
   - component: {fileID: 22201744}
   - component: {fileID: 11467870}
-  m_Layer: 30
+  m_Layer: 31
   m_Name: Blocker_Transition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ Camera:
   m_Depth: 100
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1073741824
+    m_Bits: 2147483648
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -195,9 +195,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
-  m_ReferencePixelsPerUnit: 100
+  m_ReferencePixelsPerUnit: 1
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 768, y: 1024}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3

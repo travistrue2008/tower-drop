@@ -10,8 +10,8 @@ using UnityEngine;
 public class Segment : MonoBehaviour {
 	#region Constants
 	public const int Resolution = 90;
-	public const float Height = 1.0f;
-	public const float Radius = 4.0f;
+	public const float Height = 0.35f;
+	public const float Radius = 2.0f;
 	public const float FallPower = 10.0f;
 	public const float Slice = (Mathf.PI * 2.0f) / (float)Resolution;
 	public static float DegreesPerSlice = 360.0f / (float)Resolution;
@@ -44,7 +44,7 @@ public class Segment : MonoBehaviour {
 
 	#region Properties
 	public bool IsFalling { get { return _rigidBody != null; } }
-	public Ring ParentRing { get { return transform.GetComponent<Ring>(); } }
+	public Ring ParentRing { get { return transform.parent.GetComponent<Ring>(); } }
 
 	public bool IsHazard {
 		set {

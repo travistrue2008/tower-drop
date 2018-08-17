@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Burst
+  - Services
   layers:
   - Default
   - TransparentFX
@@ -37,7 +38,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Popup
   m_SortingLayers:
   - name: Default
     uniqueID: 0
