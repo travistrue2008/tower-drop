@@ -6,7 +6,7 @@ using TRUEStudios.State;
 using TRUEStudios.Tweens;
 using TMPro;
 
-public class CompletedPopup : Popup {
+public class ResultsPopup : Popup {
 	#region Fields
 	[SerializeField]
 	private TextMeshProUGUI _congratsLabel;

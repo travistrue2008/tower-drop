@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace TRUEStudios.State {
 	public class PopupService : PrefabFactoryService<Popup> {
@@ -145,10 +146,7 @@ namespace TRUEStudios.State {
 		#region Private Methods
 		private void CancelTransition () {
 			// stop the current transition if it's active
-			if (_transitionRoutine == null) {
-				return;
-			}
-
+			if (_transitionRoutine == null) { return; }
 			StopCoroutine(_transitionRoutine);
 			_transitionRoutine = null;
 
@@ -166,11 +164,20 @@ namespace TRUEStudios.State {
 
 				_transitioningOut = false;
 			}
+
+			RefreshFirstSelected(true);
+		}
+
+		private void RefreshFirstSelected (bool enable) {
+			var obj = (enable && StackSize > 0) ? _stack[StackSize - 1].gameObject : null;
+			EventSystem.current.SetSelectedGameObject(obj);
 		}
 		#endregion
 
 		#region Coroutines
 		private IEnumerator ProcessPush () {
+			RefreshFirstSelected(false);
+
 			// check if there was a previous popup
 			if (StackSize > 1) {
 				// get the previous popup, and check if it's got a transition tween
@@ -196,10 +203,12 @@ namespace TRUEStudios.State {
 			// deactivate the transition blocker image, and stop invalidate the transition coroutine
 			_transitionBlockerImage.gameObject.SetActive(false);
 			_transitionRoutine = null;
+			RefreshFirstSelected(true);
 		}
 
 		private IEnumerator ProcessPop () {
 			// set flag
+			RefreshFirstSelected(false);
 			_transitioningOut = true; {
 				// hide the current popup
 				if (currentPopup.isActiveAndEnabled && currentPopup.TransitionTween != null) {
@@ -226,6 +235,7 @@ namespace TRUEStudios.State {
 			_stackBlockerImage.gameObject.SetActive(StackSize > 0);
 			_transitionBlockerImage.gameObject.SetActive(false);
 			_transitionRoutine = null;
+			RefreshFirstSelected(true);
 		}
 		#endregion
 	}

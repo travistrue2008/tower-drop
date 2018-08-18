@@ -44,8 +44,10 @@ public class HUD : MonoBehaviour {
 	}
 
 	private void OnEnable () {
-		Services.Get<LevelService>().OnScoreChanged.AddListener(OnScoreChanged);
-		Services.Get<LevelService>().OnProgressChanged.AddListener(OnProgressChanged);
+		var service = Services.Get<LevelService>();
+		service.OnLevelStarted.AddListener(Reset);
+		service.OnScoreChanged.AddListener(OnScoreChanged);
+		service.OnProgressChanged.AddListener(OnProgressChanged);
 	}
 
 	private void OnDisable () {

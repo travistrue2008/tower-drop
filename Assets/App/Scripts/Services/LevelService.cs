@@ -70,8 +70,12 @@ public class LevelService : Service {
 			throw new ArgumentException("level must be > 1");
 		}
 
-		SetupLevel(level);
+		// reset the score and level
+		Score = 0;
+		Progress = 0.0f;
 		_level = level;
+
+		SetupLevel(level);
 		_onLevelStarted.Invoke();
 	}
 
@@ -79,7 +83,7 @@ public class LevelService : Service {
 		GotoLevel(_level + 1);
 	}
 
-	public void ReloadLevel () {
+	public void RestartLevel () {
 		GotoLevel(_level);
 	}
 
@@ -105,9 +109,10 @@ public class LevelService : Service {
 	private void SetupLevel (int level) {
 		// TODO: provide better resource loading here...
 		// load the level resources, and make sure it exists
-		var prefab = Resources.Load($"{LevelPrefabPath}/Level_{GetPaddedLevel(level)}") as GameObject;
+		string prefabPath = $"{LevelPrefabPath}/Level_{GetPaddedLevel(level)}";
+		var prefab = Resources.Load(prefabPath) as GameObject;
 		if (prefab == null) {
-			throw new NullReferenceException("No next level found");
+			throw new NullReferenceException($"Unable to load level: {level}");
 		}
 
 		// remove the current level
@@ -122,7 +127,7 @@ public class LevelService : Service {
 	}
 
 	private string GetPaddedLevel (int level) {
-		return $"{0,3:level}";
+		return $"{level:D3}";
 	}
 	#endregion
 }
