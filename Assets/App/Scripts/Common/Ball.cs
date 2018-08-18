@@ -47,7 +47,6 @@ public class Ball : MonoBehaviour {
 			_numRingsBroken = value;
 			if (_levelService != null && _rings != null) {
 				_levelService.Progress = (float)_numRingsBroken / (float)_rings.Length;
-				Debug.Log($"ringsBroken: {_numRingsBroken}  rings: {_rings.Length} progress: {_levelService.Progress}");
 			}
 		}
 
