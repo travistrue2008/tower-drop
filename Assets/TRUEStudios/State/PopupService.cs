@@ -177,8 +177,10 @@ namespace TRUEStudios.State {
 		}
 
 		private void RefreshFirstSelected (bool enable) {
-			var obj = (enable && StackSize > 0) ? (CurrentPopup.FirstResponder ?? CurrentPopup.gameObject) : null;
-			EventSystem.current.SetSelectedGameObject(obj);
+			bool use = (enable && StackSize > 0);
+			var responder = CurrentPopup.FirstResponder;
+			var obj = (responder != null) ? responder : CurrentPopup.gameObject;
+			EventSystem.current.SetSelectedGameObject(enable ? obj : null);
 		}
 		#endregion
 

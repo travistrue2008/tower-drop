@@ -51,7 +51,10 @@ public class HUD : MonoBehaviour {
 	}
 
 	private void OnDisable () {
-		_levelService.OnScoreChanged.RemoveListener(OnScoreChanged);
+		var levelService = Services.Get<LevelService>();
+		if (levelService != null) {
+			levelService.OnScoreChanged.RemoveListener(OnScoreChanged);
+		}
 	}
 	#endregion
 

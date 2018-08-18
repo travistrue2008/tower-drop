@@ -529,6 +529,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _transitionTween: {fileID: 114677077556271666}
+  _firstResponder: {fileID: 0}
   _onClose:
     m_PersistentCalls:
       m_Calls: []

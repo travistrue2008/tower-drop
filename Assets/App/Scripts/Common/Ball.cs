@@ -26,6 +26,8 @@ public class Ball : MonoBehaviour {
 	[SerializeField]
 	private Transform _discardContainer;
 	[SerializeField]
+	private OptionsPopup _optionsPopup;
+	[SerializeField]
 	private ResultsPopup _failedLevelPopupPrefab;
 	[SerializeField]
 	private ResultsPopup _completedLevelPopupPrefab;
@@ -36,6 +38,7 @@ public class Ball : MonoBehaviour {
 	private int _numRingsBroken = 0;
 	private Vector3 _cameraPosition;
 	private InputService _inputService;
+	private PopupService _popupService;
 	private LevelService _levelService;
 	private Rigidbody _rigidBody;
 	private Ring[] _rings;
@@ -77,7 +80,19 @@ public class Ball : MonoBehaviour {
 	private void Start () {
 		// get services
 		_inputService = Services.Get<InputService>();
+		_popupService = Services.Get<PopupService>();
 		_levelService = Services.Get<LevelService>();
+	}
+
+	private void OnEnable () {
+		Services.Get<InputService>().OnButtonPressed.AddListener(OnButtonPressed);
+	}
+
+	private void OnDisable () {
+		var inputService = Services.Get<InputService>();
+		if (inputService != null) {
+			inputService.OnButtonPressed.RemoveListener(OnButtonPressed);
+		}
 	}
 
 	private void Update () {
@@ -135,6 +150,25 @@ public class Ball : MonoBehaviour {
 	}
 	#endregion
 
+	#region Event Handlers
+	private void OnButtonPressed (int pad) {
+		// check if the start button was pressed
+		if (_inputService.IsButtonPressed(pad, GamepadButton.Start)) {
+			_popupService.PushPopup<Popup>(_optionsPopup);
+		}
+	}
+
+	private void OnGotoNextLevel () {
+		// attempt to load the next level
+		try {
+			_levelService.GotoNextLevel();
+		} catch (Exception) {
+			// load the "Finished Game" popup if the next level prefab couldn't be found
+			_popupService.PushPopup<Popup>(_completedGamePopupPrefab);
+		}
+	}
+	#endregion
+
 	#region Public Methods
 	public void Stop () {
 		_rigidBody.velocity = Vector3.zero;
@@ -156,7 +190,7 @@ public class Ball : MonoBehaviour {
 		Stop();
 
 		bool updatedScore = _levelService.SubmitScore();
-		var popup = Services.Get<PopupService>().PushPopup<ResultsPopup>(_failedLevelPopupPrefab);
+		var popup = _popupService.PushPopup<ResultsPopup>(_failedLevelPopupPrefab);
 		if (updatedScore) {
 			popup.SetBestScore(_levelService.Score);
 		}
@@ -169,23 +203,13 @@ public class Ball : MonoBehaviour {
 
 		// submit the current score, and instantiate the popup
 		bool updatedScore = _levelService.SubmitScore();
-		var popup = Services.Get<PopupService>().PushPopup<ResultsPopup>(_completedLevelPopupPrefab);
+		var popup = _popupService.PushPopup<ResultsPopup>(_completedLevelPopupPrefab);
 		popup.SetLevel(_levelService.CurrentLevel);
 		if (updatedScore) {
 			popup.SetBestScore(_levelService.Score);
 		}
 
 		popup.OnClose.AddListener(OnGotoNextLevel);
-	}
-
-	private void OnGotoNextLevel () {
-		// attempt to load the next level
-		try {
-			_levelService.GotoNextLevel();
-		} catch (Exception) {
-			// load the "Finished Game" popup if the next level prefab couldn't be found
-			Services.Get<PopupService>().PushPopup<Popup>(_completedGamePopupPrefab);
-		}
 	}
 	#endregion
 }

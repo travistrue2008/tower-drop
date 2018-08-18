@@ -4,13 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+using TRUEStudios.Core;
 using TRUEStudios.State;
-
-[Serializable]
-public class IntEvent : UnityEvent<int> {}
-
-[Serializable]
-public class FloatEvent : UnityEvent<float> {}
 
 public class LevelService : Service {
 	#region Constants

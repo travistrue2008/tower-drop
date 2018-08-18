@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 114504289055311242}
   - component: {fileID: 114307635076702734}
   m_Layer: 31
-  m_Name: Options
+  m_Name: Game_Options
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _transitionTween: {fileID: 0}
+  _firstResponder: {fileID: 0}
   _onClose:
     m_PersistentCalls:
       m_Calls: []

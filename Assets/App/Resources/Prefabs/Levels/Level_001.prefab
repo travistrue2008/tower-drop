@@ -4664,6 +4664,8 @@ MonoBehaviour:
   _camera: {fileID: 20721107566552586}
   _ringsContainer: {fileID: 4564786470837866}
   _discardContainer: {fileID: 4697196096001174}
+  _optionsPopup: {fileID: 114132555962924634, guid: f94f1721c91b6b6499554de023959822,
+    type: 2}
   _failedLevelPopupPrefab: {fileID: 114483868474621476, guid: 553c1da986d319a4c818da058b80cce5,
     type: 2}
   _completedLevelPopupPrefab: {fileID: 114546559984657412, guid: 759bbe7234ec61e499c1818d3f7246c8,
