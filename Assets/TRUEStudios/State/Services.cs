@@ -5,6 +5,7 @@
 ******************************************************************************/
 
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -223,6 +224,19 @@ namespace TRUEStudios.State {
 			PlayerPrefs.Save();
 		}
 		#endif
+
+		[MenuItem("Tools/Game/Screenshot")]
+		public static void TakeScreenshot () {
+			const string SubDirectory = "Screenshots";
+			if (!Directory.Exists(SubDirectory)) {
+				Directory.CreateDirectory(SubDirectory);
+			}
+
+			// generate the timestamp, and take the screenshot
+			var timestamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+			ScreenCapture.CaptureScreenshot($"Screenshots/{timestamp}.png");
+			Debug.Log("Screenshot saved");
+		}
 		#endregion
 	}
 }
