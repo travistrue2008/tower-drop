@@ -113,7 +113,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &1925573855
+--- !u!1001 &567031758
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -210,6 +210,16 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114089818887313970, guid: 2c83bf37c23d81145a2d563253e218d1,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114089818887313970, guid: 2c83bf37c23d81145a2d563253e218d1,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 114568838896315884, guid: 2c83bf37c23d81145a2d563253e218d1,
         type: 2}
       propertyPath: m_havePropertiesChanged
@@ -239,36 +249,6 @@ Prefab:
         type: 2}
       propertyPath: m_isInputParsingRequired
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114089818887313970, guid: 2c83bf37c23d81145a2d563253e218d1,
-        type: 2}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114089818887313970, guid: 2c83bf37c23d81145a2d563253e218d1,
-        type: 2}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114089818887313970, guid: 2c83bf37c23d81145a2d563253e218d1,
-        type: 2}
-      propertyPath: m_text
-      value: Options
-      objectReference: {fileID: 0}
-    - target: {fileID: 114089818887313970, guid: 2c83bf37c23d81145a2d563253e218d1,
-        type: 2}
-      propertyPath: m_textInfo.characterCount
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 114936791398521612, guid: 2c83bf37c23d81145a2d563253e218d1,
-        type: 2}
-      propertyPath: m_text
-      value: Hiscores
-      objectReference: {fileID: 0}
-    - target: {fileID: 114936791398521612, guid: 2c83bf37c23d81145a2d563253e218d1,
-        type: 2}
-      propertyPath: m_textInfo.characterCount
-      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2c83bf37c23d81145a2d563253e218d1, type: 2}

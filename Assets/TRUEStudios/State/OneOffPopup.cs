@@ -16,6 +16,8 @@ namespace TRUEStudios.Core {
 		private bool _attemptGC;
 		[SerializeField]
 		private Popup _popupPrefab;
+
+		private PopupService _service;
 		#endregion
 
 		#region Properties
@@ -26,13 +28,17 @@ namespace TRUEStudios.Core {
 		#endregion
 
 		#region Methods
+		private void Start () {
+			_service = Services.Get<PopupService>();
+		}
+
 		public void Show () {
 			if (_popupPrefab == null) {
 				throw new NullReferenceException("_popupPrefab not set in the Inspector.");
 			}
 
 			// load and push the popup specified by prefab
-			Popup popup = Services.Get<PopupService>().PushPopup<Popup>(_popupPrefab);
+			Popup popup = _service.PushPopup<Popup>(_popupPrefab);
 			if (popup != null) {
 				popup.OnClose.AddListener(HandleOnClose);
 			} else {
@@ -42,7 +48,7 @@ namespace TRUEStudios.Core {
 
 		private void HandleOnClose () {
 			// release the prefab, and attempt to clean up memory
-			Services.Get<PopupService>().ReleasePrefab(_popupPrefab.name);
+			_service.ReleasePrefab(_popupPrefab.name);
 			if (_attemptGC) {
 				Services.Release();
 			}
