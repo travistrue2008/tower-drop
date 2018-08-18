@@ -21,7 +21,10 @@ namespace TRUEStudios.Core {
 			}
 
 			_instance = this;
-			Services.Instance.CurrentEventSystem.SetSelectedGameObject(gameObject);
+		}
+
+		private void Start () {
+			Services.Get<EventService>().System.SetSelectedGameObject(gameObject);
 		}
 
 		private void OnDestroy () {

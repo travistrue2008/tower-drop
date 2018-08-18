@@ -9,7 +9,6 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -26,7 +25,6 @@ namespace TRUEStudios.State {
 		private static bool _shuttingDown = false;
 		private static Services _instance;
 
-		private EventSystem _eventSystem;
 		private Dictionary<Type, Service> _services = new Dictionary<Type, Service>();
 		#endregion
 
@@ -75,22 +73,6 @@ namespace TRUEStudios.State {
 				}
 
 				return _instance;
-			}
-		}
-
-		public EventSystem CurrentEventSystem {
-			get {
-				// cache the child EventSystem if not already
-				if (_eventSystem == null) {
-					_eventSystem = GetComponentInChildren<EventSystem>();
-				}
-
-				// make sure a child was found after caching
-				if (_eventSystem == null) {
-					throw new NullReferenceException("No EventSystem component was found for Services.");
-				}
-
-				return _eventSystem;
 			}
 		}
 		#endregion
