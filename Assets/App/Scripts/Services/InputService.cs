@@ -2,10 +2,10 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
-
+using TRUEStudios.State;
 using TMPro;
 
-public class InputController : MonoBehaviour {
+public class InputService : Service {
 	#region Fields
 	[SerializeField]
 	private TextMeshProUGUI _debugText;
@@ -75,20 +75,20 @@ public class InputController : MonoBehaviour {
 Triggers: ({LeftTrigger}, {RightTrigger})
 Left Axis: {_leftAxis}
 Right Axis: {_rightAxis}
-{Up ? "Up" : ""}
-{Down ? "Down" : ""}
-{Left ? "Left" : ""}
-{Right ? "Right" : ""}
-{A ? "A" : ""}
-{B ? "B" : ""}
-{X ? "X" : ""}
-{Y ? "Y" : ""}
-{Back ? "Back" : ""}
-{Start ? "Start" : ""}
-{LeftBumper ? "LeftBumper" : ""}
-{RightBumper ? "RightBumper" : ""}
-{LeftThumbstick ? "LeftThumbstick" : ""}
-{RightThumbstick ? "RightThumbstick" : ""}
+Up: {Up}
+Down: {Down}
+Left: {Left}
+Right: {Right}
+A: {A}
+B: {B}
+X: {X}
+Y: {Y}
+Back: {Back}
+Start: {Start}
+LeftBumper: {LeftBumper}
+RightBumper: {RightBumper}
+LeftThumbstick: {LeftThumbstick}
+RightThumbstick: {RightThumbstick}
 		";
 	}
 	#endregion

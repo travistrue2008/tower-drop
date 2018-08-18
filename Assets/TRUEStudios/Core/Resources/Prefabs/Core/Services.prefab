@@ -43,6 +43,8 @@ GameObject:
   - component: {fileID: 470174}
   - component: {fileID: 11472990}
   - component: {fileID: 11421780}
+  - component: {fileID: 114914593701390766}
+  - component: {fileID: 114097911158192608}
   m_Layer: 0
   m_Name: Services
   m_TagString: Services
@@ -526,3 +528,30 @@ Prefab:
   m_SourcePrefab: {fileID: 0}
   m_RootGameObject: {fileID: 178218}
   m_IsPrefabAsset: 1
+--- !u!114 &114097911158192608
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 178218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be1f5130b583d9247bea7621fb9cab2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onScoreChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: IntEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+--- !u!114 &114914593701390766
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 178218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd8c5e7ae54fe4c4384a64c168d91224, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _debugText: {fileID: 0}

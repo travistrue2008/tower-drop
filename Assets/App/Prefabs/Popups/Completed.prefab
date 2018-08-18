@@ -66,7 +66,7 @@ MonoBehaviour:
   _playingForward: 1
   _numIterations: 0
   _duration: 0.2
-  _delay: 1
+  _delay: 0.5
   _target: {fileID: 0}
   _distributionCurve:
     serializedVersion: 2
