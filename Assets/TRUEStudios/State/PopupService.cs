@@ -23,6 +23,7 @@ namespace TRUEStudios.State {
 
 		private bool _transitioningOut;
 		private Coroutine _transitionRoutine;
+		private GameObject _firstResponder;
 		private List<Popup> _stack = new List<Popup>();
 		#endregion
 
@@ -41,7 +42,7 @@ namespace TRUEStudios.State {
 			}
 		}
 
-		public Popup currentPopup {
+		public Popup CurrentPopup {
 			get {
 				return (StackSize > 0) ? _stack[StackSize - 1] : null;
 			}
@@ -84,6 +85,9 @@ namespace TRUEStudios.State {
 				}
 
 				previousPopup.gameObject.SetActive(false);
+			} else {
+				// cache the first responder
+				_firstResponder = EventSystem.current.currentSelectedGameObject;
 			}
 			
 			// push the new popup onto the stack
@@ -105,7 +109,7 @@ namespace TRUEStudios.State {
 
 		public Popup PopPopup () {
 			// make sure there is a popup to dismiss
-			Popup dismissingPopup = currentPopup;
+			Popup dismissingPopup = CurrentPopup;
 			if (dismissingPopup != null) {
 				// check if currently transitioning out with only one popup left
 				if (StackSize == 1 && _transitioningOut) {
@@ -140,6 +144,10 @@ namespace TRUEStudios.State {
 			// deactivate both blocker images
 			_stackBlockerImage.gameObject.SetActive(false);
 			_popupSpawn.gameObject.SetActive(false);
+
+			// revert back to the initially-set GameObject
+			EventSystem.current.SetSelectedGameObject(_firstResponder);
+			_firstResponder = null;
 		}
 		#endregion
 
@@ -153,13 +161,13 @@ namespace TRUEStudios.State {
 			// handle transitiong out logic
 			if (_transitioningOut) {
 				// remove the popup reference, and destroy the popup
-				Popup removedPopup = currentPopup;
+				Popup removedPopup = CurrentPopup;
 				_stack.Remove(removedPopup);
 				Destroy(removedPopup.gameObject);
 
 				// activate the new current popup
-				if (currentPopup != null) {
-					currentPopup.gameObject.SetActive(true);
+				if (CurrentPopup != null) {
+					CurrentPopup.gameObject.SetActive(true);
 				}
 
 				_transitioningOut = false;
@@ -169,7 +177,7 @@ namespace TRUEStudios.State {
 		}
 
 		private void RefreshFirstSelected (bool enable) {
-			var obj = (enable && StackSize > 0) ? _stack[StackSize - 1].gameObject : null;
+			var obj = (enable && StackSize > 0) ? (CurrentPopup.FirstResponder ?? CurrentPopup.gameObject) : null;
 			EventSystem.current.SetSelectedGameObject(obj);
 		}
 		#endregion
@@ -195,9 +203,9 @@ namespace TRUEStudios.State {
 			}
 
 			// display the current popup
-			currentPopup.gameObject.SetActive(true);
-			if (currentPopup.TransitionTween != null) {
-				yield return currentPopup.TransitionTween.Play();
+			CurrentPopup.gameObject.SetActive(true);
+			if (CurrentPopup.TransitionTween != null) {
+				yield return CurrentPopup.TransitionTween.Play();
 			}
 
 			// deactivate the transition blocker image, and stop invalidate the transition coroutine
@@ -211,23 +219,23 @@ namespace TRUEStudios.State {
 			RefreshFirstSelected(false);
 			_transitioningOut = true; {
 				// hide the current popup
-				if (currentPopup.isActiveAndEnabled && currentPopup.TransitionTween != null) {
-					yield return currentPopup.TransitionTween.Play(false);
+				if (CurrentPopup.isActiveAndEnabled && CurrentPopup.TransitionTween != null) {
+					yield return CurrentPopup.TransitionTween.Play(false);
 				}
 				
 				// remove the popup reference, and destroy the popup
-				Popup removedPopup = currentPopup;
+				Popup removedPopup = CurrentPopup;
 				_stack.Remove(removedPopup);
 				Destroy(removedPopup.gameObject);
 			}
 			_transitioningOut = false; // unset flag
 
 			// check if there are any popups left in the stack
-			if (currentPopup != null) {
+			if (CurrentPopup != null) {
 				// activate, and transition the popup
-				currentPopup.gameObject.SetActive(true);
-				if (currentPopup.TransitionTween != null) {
-					yield return currentPopup.TransitionTween.Play();
+				CurrentPopup.gameObject.SetActive(true);
+				if (CurrentPopup.TransitionTween != null) {
+					yield return CurrentPopup.TransitionTween.Play();
 				}
 			}
 
@@ -235,7 +243,14 @@ namespace TRUEStudios.State {
 			_stackBlockerImage.gameObject.SetActive(StackSize > 0);
 			_transitionBlockerImage.gameObject.SetActive(false);
 			_transitionRoutine = null;
-			RefreshFirstSelected(true);
+
+			// check if the stack is now empty
+			if (StackSize == 0) {
+				EventSystem.current.SetSelectedGameObject(_firstResponder);
+				_firstResponder = null;
+			} else {
+				RefreshFirstSelected(true);
+			}
 		}
 		#endregion
 	}

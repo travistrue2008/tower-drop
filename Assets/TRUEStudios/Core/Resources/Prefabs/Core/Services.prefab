@@ -84,7 +84,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &192758
 GameObject:
   m_ObjectHideFlags: 1
@@ -101,7 +101,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &445840
 Transform:
   m_ObjectHideFlags: 1
@@ -539,10 +539,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be1f5130b583d9247bea7621fb9cab2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _onLevelStarted:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   _onScoreChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: IntEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  _onProgressChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: FloatEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!114 &114914593701390766
 MonoBehaviour:
   m_ObjectHideFlags: 1

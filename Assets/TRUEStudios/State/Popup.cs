@@ -16,11 +16,14 @@ namespace TRUEStudios.State {
 		[SerializeField]
 		private Tween _transitionTween;
 		[SerializeField]
+		private GameObject _firstResponder;
+		[SerializeField]
 		private UnityEvent _onClose = new UnityEvent();
 		#endregion
 
 		#region Properties
 		public Tween TransitionTween { get { return _transitionTween; } }
+		public GameObject FirstResponder { get { return _firstResponder; } }
 		public UnityEvent OnClose { get { return _onClose; } }
 		#endregion
 
@@ -40,7 +43,7 @@ namespace TRUEStudios.State {
 
 		public void Dismiss () {
 			// only pop the last popup off the stack if it's this particular popup
-			if (Services.Get<PopupService>().currentPopup == this) {
+			if (Services.Get<PopupService>().CurrentPopup == this) {
 				Services.Get<PopupService>().PopPopup();
 			} else {
 				Debug.LogWarning("This popup isn't the active popup.");
