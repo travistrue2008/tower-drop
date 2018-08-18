@@ -1,4 +1,10 @@
-﻿using System.Collections;
+﻿/******************************************************************************
+ * Foundation Framework
+ * Created by: Travis J True, 2016
+ * This framework is free to use with no limitations.
+******************************************************************************/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -54,6 +60,8 @@ namespace TRUEStudios.State {
 		[SerializeField]
 		private IntEvent _onButtonReleased = new IntEvent();
 
+		private int _lastUpPad = 0;
+		private int _lastDownPad = 0;
 		private Vector2 _leftAxis = Vector2.zero;
 		private Vector2 _rightAxis = Vector2.zero;
 		private bool[] _lastDpad = new bool[] { false, false, false, false }; // UP, DOWN, LEFT, RIGHT
@@ -128,7 +136,12 @@ namespace TRUEStudios.State {
 			pad |= RightBumper ? (int)GamepadButton.RightBumper : 0;
 			pad |= LeftThumbstick ? (int)GamepadButton.LeftThumbstick : 0;
 			pad |= RightThumbstick ? (int)GamepadButton.RightThumbstick : 0;
-			_onButtonPressed.Invoke(pad);
+			
+			// check if the gamepad's state has changed
+			if (_lastDownPad != pad) {
+				_onButtonPressed.Invoke(pad);
+				_lastDownPad = pad;
+			}
 		}
 
 		private void ProcessButtonReleases () {
@@ -147,7 +160,12 @@ namespace TRUEStudios.State {
 			pad |= RightBumper ? 0 : (int)GamepadButton.RightBumper;
 			pad |= LeftThumbstick ? 0 : (int)GamepadButton.LeftThumbstick;
 			pad |= RightThumbstick ? 0 : (int)GamepadButton.RightThumbstick;
-			_onButtonReleased.Invoke(pad);
+
+			// check if the gamepad's state has changed
+			if (_lastUpPad != pad) {
+				_onButtonReleased.Invoke(pad);
+				_lastUpPad = pad;
+			}
 		}
 
 		private void PrintDebug () {

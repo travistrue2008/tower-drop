@@ -23,7 +23,7 @@ namespace TRUEStudios.State {
 
 		private bool _transitioningOut;
 		private Coroutine _transitionRoutine;
-		private GameObject _firstResponder;
+		private GameObject _cachedResponder;
 		private List<Popup> _stack = new List<Popup>();
 		#endregion
 
@@ -49,7 +49,7 @@ namespace TRUEStudios.State {
 		}
 		#endregion
 
-		#region Load/Release Popup Profiles
+		#region MonoBehaviour Hooks
 		protected override void OnInitialize () {
 			// make sure required references are set in the Inspector
 			if (_stackBlockerImage == null || _transitionBlockerImage == null || _popupSpawn == null) {
@@ -86,8 +86,7 @@ namespace TRUEStudios.State {
 
 				previousPopup.gameObject.SetActive(false);
 			} else {
-				// cache the first responder
-				_firstResponder = EventSystem.current.currentSelectedGameObject;
+				_cachedResponder = EventSystem.current.currentSelectedGameObject;
 			}
 			
 			// push the new popup onto the stack
@@ -144,10 +143,7 @@ namespace TRUEStudios.State {
 			// deactivate both blocker images
 			_stackBlockerImage.gameObject.SetActive(false);
 			_popupSpawn.gameObject.SetActive(false);
-
-			// revert back to the initially-set GameObject
-			EventSystem.current.SetSelectedGameObject(_firstResponder);
-			_firstResponder = null;
+			DeferToCachedResponder();
 		}
 		#endregion
 
@@ -180,7 +176,13 @@ namespace TRUEStudios.State {
 			bool use = (enable && StackSize > 0);
 			var responder = CurrentPopup.FirstResponder;
 			var obj = (responder != null) ? responder : CurrentPopup.gameObject;
-			EventSystem.current.SetSelectedGameObject(enable ? obj : null);
+			EventSystem.current.SetSelectedGameObject(use ? obj : null);
+		}
+
+		private void DeferToCachedResponder () {
+			// revert back to the initially-set GameObject
+			EventSystem.current.SetSelectedGameObject(_cachedResponder);
+			_cachedResponder = null;
 		}
 		#endregion
 
@@ -248,8 +250,7 @@ namespace TRUEStudios.State {
 
 			// check if the stack is now empty
 			if (StackSize == 0) {
-				EventSystem.current.SetSelectedGameObject(_firstResponder);
-				_firstResponder = null;
+				DeferToCachedResponder();
 			} else {
 				RefreshFirstSelected(true);
 			}
