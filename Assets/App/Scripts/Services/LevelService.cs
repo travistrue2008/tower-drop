@@ -79,19 +79,19 @@ public class LevelService : Service {
 		GotoLevel(_level + 1);
 	}
 
+	public void ReloadLevel () {
+		GotoLevel(_level);
+	}
+
 	public void ClearData () {
 		PlayerPrefs.DeleteAll();
 		PlayerPrefs.Save();
 	}
 
-	public bool SubmitScore (int score, int level) {
-		if (score < 0 || level < 1) {
-			throw new ArgumentException("score < 0 or level < 1");
-		}
-
-		int currentBest = GetBestScore(level);
-		bool updateScore = (currentBest < score);
-		PlayerPrefs.SetInt($"{BestScorePrefix}/{GetPaddedLevel(level)}", score);
+	public bool SubmitScore () {
+		int currentBest = GetBestScore(_level);
+		bool updateScore = (currentBest < _score);
+		PlayerPrefs.SetInt($"{BestScorePrefix}/{GetPaddedLevel(_level)}", _score);
 		PlayerPrefs.Save();
 		return updateScore;
 	}

@@ -732,12 +732,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4816427853584904}
+  - component: {fileID: 114444704036055554}
   - component: {fileID: 33683501941665500}
   - component: {fileID: 23638650094242864}
   - component: {fileID: 135502321948915810}
   - component: {fileID: 54195793546073328}
   - component: {fileID: 96188882335436894}
-  - component: {fileID: 114444704036055554}
   m_Layer: 0
   m_Name: Player_Ball
   m_TagString: Player
@@ -4355,7 +4355,7 @@ MonoBehaviour:
   _discardContainer: {fileID: 4330860790452626}
   _failPopupPrefab: {fileID: 114802596256618782, guid: 553c1da986d319a4c818da058b80cce5,
     type: 2}
-  _completedPopupPrefab: {fileID: 114515614992942108, guid: 759bbe7234ec61e499c1818d3f7246c8,
+  _completedPopupPrefab: {fileID: 114546559984657412, guid: 759bbe7234ec61e499c1818d3f7246c8,
     type: 2}
 --- !u!114 &114447649875405010
 MonoBehaviour:

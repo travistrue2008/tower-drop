@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 using TRUEStudios.State;
+using TMPro;
 
 public class Ball : MonoBehaviour {
 	#region Constants
@@ -157,7 +158,15 @@ public class Ball : MonoBehaviour {
 
 	private void FinishLevel () {
 		Stop();
-		var popup = Services.Get<PopupService>().PushPopup<Popup>(_completedPopupPrefab);
+
+		// submit the current score, and instantiate the popup
+		bool updatedScore = _levelService.SubmitScore();
+		var popup = Services.Get<PopupService>().PushPopup<CompletedPopup>(_completedPopupPrefab);
+		popup.SetLevel(_levelService.CurrentLevel);
+		if (updatedScore) {
+			popup.SetBestScore(_levelService.Score);
+		}
+
 		popup.OnClose.AddListener(OnNextLevel);
 	}
 

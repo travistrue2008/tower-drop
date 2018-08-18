@@ -77,7 +77,11 @@ namespace TRUEStudios.Tweens {
 			// return to the cached value if not currently playing
 			if (!Application.isPlaying) {
 				foreach (Object target in targets) {
-					(target as T).Factor = 0.0f;
+					// check the child reference
+					var childReference = target as T;
+					if (childReference != null) {
+						childReference.Factor = 0.0f;
+					}
 				}
 			}
 		}
