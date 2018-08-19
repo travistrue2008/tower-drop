@@ -35,9 +35,9 @@ public class LevelService : Service {
 
 	public int Score {
 		set {
-			int old = _score;
-			_score = Mathf.Max(0, value);
-			if (old != _score) {
+			int v = Mathf.Max(0, value);
+			if (_score != v) {
+				_score = v;
 				_onScoreChanged.Invoke(_score);
 			}
 		}
@@ -47,9 +47,9 @@ public class LevelService : Service {
 
 	public float Progress {
 		set {
-			float old = _progress;
-			_progress = Mathf.Clamp01(value);
-			if (old != _progress) {
+			float v = Mathf.Clamp01(value);
+			if (_progress != v) {
+				_progress = v;
 				_onProgressChanged.Invoke(_progress);
 			}
 		}

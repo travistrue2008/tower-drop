@@ -41,10 +41,8 @@ namespace TRUEStudios.Core {
 
 		public int Value {
 			set {
-				int oldValue = _value;
-				_value = value;
-
-				if (oldValue != _value) {
+				if (_value != value) {
+					_value = value;
 					_onChange.Invoke(_value);
 				}
 

@@ -26,7 +26,7 @@ public class HUD : MonoBehaviour {
 	[SerializeField]
 	private TextMeshProUGUI _streamLabelPrefab;
 
-	private int _oldScore = 0;
+	private int _lastScore = 0;
 	private Vector2 _size;
 	private LevelService _levelService;
 	private AlphaTween _bestScoreTween;
@@ -78,17 +78,17 @@ public class HUD : MonoBehaviour {
 		RefreshUI();
 
 		// check if the score has increased
-		if (_oldScore < _levelService.Score) {
-			int streak = _levelService.Score - _oldScore;
+		if (_lastScore < _levelService.Score) {
+			int streak = _levelService.Score - _lastScore;
 			DisplayStreakLabel(streak);
 
 			// check if this is the first time the score has been changed
-			if (_oldScore == 0) {
+			if (_lastScore == 0) {
 				_bestScoreTween.PlayForward();
 			}
 		}
 
-		_oldScore = _levelService.Score;
+		_lastScore = _levelService.Score;
 	}
 	#endregion
 
