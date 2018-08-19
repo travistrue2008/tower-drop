@@ -20,8 +20,6 @@ public class Ball : MonoBehaviour {
 	[SerializeField]
 	private bool _isPlaying = true;
 	[SerializeField]
-	private Camera _camera;
-	[SerializeField]
 	private Transform _ringsContainer;
 	[SerializeField]
 	private Transform _discardContainer;
@@ -67,7 +65,7 @@ public class Ball : MonoBehaviour {
 
 	#region MonoBehaviour Hooks
 	private void Awake () {
-		_cameraPosition = _camera.transform.position;
+		_cameraPosition = Camera.main.transform.position;
 
 		_rigidBody = GetComponent<Rigidbody>();
 		_rings = _ringsContainer.GetComponentsInChildren<Ring>();
@@ -103,9 +101,9 @@ public class Ball : MonoBehaviour {
 		}
 
 		// check if the camera dropped too far
-		if (_camera.transform.position.y - transform.position.y > MaxDropDistance) {
+		if (Camera.main.transform.position.y - transform.position.y > MaxDropDistance) {
 			_cameraPosition.y = transform.position.y + MaxDropDistance;
-			_camera.transform.position = _cameraPosition;
+			Camera.main.transform.position = _cameraPosition;
 		}
 	}
 

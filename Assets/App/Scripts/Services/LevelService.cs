@@ -105,6 +105,7 @@ public class LevelService : Service {
 		// TODO: provide better resource loading here...
 		// load the level resources, and make sure it exists
 		string prefabPath = $"{LevelPrefabPath}/Level_{GetPaddedLevel(level)}";
+		Debug.Log($"loading prefab: {prefabPath}");
 		var prefab = Resources.Load(prefabPath) as GameObject;
 		if (prefab == null) {
 			throw new NullReferenceException($"Unable to load level: {level}");
