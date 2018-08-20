@@ -10,7 +10,7 @@ namespace TRUEStudios.Tweens {
 	public class PositionTween : Tween<Vector3> {
 		public enum CoordinateSpace {
 			Local,
-			Global
+			Global,
 		}
 		
 		#region Fields

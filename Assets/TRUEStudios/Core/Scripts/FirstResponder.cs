@@ -24,7 +24,7 @@ namespace TRUEStudios.Core {
 		}
 
 		private void Start () {
-			Services.Get<EventService>().System.SetSelectedGameObject(gameObject);
+			Services.Get<GamepadService>().System.SetSelectedGameObject(gameObject);
 		}
 
 		private void OnDestroy () {

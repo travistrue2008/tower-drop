@@ -4,12 +4,16 @@
  * This framework is free to use with no limitations.
 ******************************************************************************/
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace TRUEStudios.Core {
+	[Serializable]
 	public class IntEvent : UnityEvent<int> {}
+
+	[Serializable]
 	public class FloatEvent : UnityEvent<float> {}
 }

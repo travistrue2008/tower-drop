@@ -26,9 +26,7 @@ public class HUD : MonoBehaviour {
 	[SerializeField]
 	private TextMeshProUGUI _streamLabelPrefab;
 
-	private int _lastScore = 0;
 	private Vector2 _size;
-	private LevelService _levelService;
 	private AlphaTween _bestScoreTween;
 	#endregion
 
@@ -37,80 +35,49 @@ public class HUD : MonoBehaviour {
 		_size = new Vector2(_progressContainer.sizeDelta.x, _fillProgress.sizeDelta.y);
 		_bestScoreTween = _bestScoreLabel.GetComponent<AlphaTween>();
 	}
-
-	private void Start () {
-		_levelService = Services.Get<LevelService>();
-		Refresh();
-	}
-
-	private void OnEnable () {
-		var service = Services.Get<LevelService>();
-		service.OnLevelStarted.AddListener(Reset);
-		service.OnScoreChanged.AddListener(OnScoreChanged);
-		service.OnProgressChanged.AddListener(OnProgressChanged);
-	}
-
-	private void OnDisable () {
-		var levelService = Services.Get<LevelService>();
-		if (levelService != null) {
-			levelService.OnScoreChanged.RemoveListener(OnScoreChanged);
-		}
-	}
 	#endregion
 
-	#region Event Handlers
-	private void OnScoreChanged (int score) {
-		Refresh();
+	#region Actions
+	public void SetLevel (int level) {
+		int bestScore = BestScore.Get(level);
+		_currentLevelLabel.text = $"{level}";
+		_nextLevelLabel.text = $"{level + 1}";
+		_bestScoreLabel.text = (bestScore > 0) ? $"Best: {bestScore}" : "";
 	}
 
-	private void OnProgressChanged (float progress) {
-		Refresh();
+	public void SetStreak (int streak) {
+		if (streak > 0) {
+			DisplayStreakLabel(streak);
+		}
+	}
+
+	public void SetScore (int score) {
+		_scoreLabel.text = $"{score}";
+		if (_bestScoreTween != null && score > 0) {
+			_bestScoreTween.PlayForward();
+		}
+	}
+
+	public void SetProgress (float progress) {
+		_size.x = _progressContainer.sizeDelta.x * progress;
+		_fillProgress.sizeDelta = _size;
 	}
 	#endregion
 
 	#region Actions
 	public void Reset () {
 		_bestScoreTween.ResetToBegin();
-		Refresh();
-	}
-
-	public void Refresh () {
-		RefreshUI();
-
-		// check if the score has increased
-		if (_lastScore < _levelService.Score) {
-			int streak = _levelService.Score - _lastScore;
-			DisplayStreakLabel(streak);
-
-			// check if this is the first time the score has been changed
-			if (_lastScore == 0) {
-				_bestScoreTween.PlayForward();
-			}
-		}
-
-		_lastScore = _levelService.Score;
 	}
 	#endregion
 
 	#region Private Methods
-	private void RefreshUI () {
-		int bestScore = _levelService.CurrentLevelBestScore;
-
-		_scoreLabel.text = $"{_levelService.Score}";
-		_currentLevelLabel.text = $"{_levelService.CurrentLevel}";
-		_nextLevelLabel.text = $"{_levelService.CurrentLevel + 1}";
-		_bestScoreLabel.text = (bestScore > 0) ? $"Best: {bestScore}" : "";
-
-		// update the progress fill
-		_size.x = _progressContainer.sizeDelta.x * _levelService.Progress;
-		_fillProgress.sizeDelta = _size;
-	}
-
 	private void DisplayStreakLabel (int streak) {
 		// instantiate the prefab label
 		var obj = GameObject.Instantiate(_streamLabelPrefab);
 		obj.transform.SetParent(_streakContainer);
 		obj.transform.localScale = Vector3.one;
+
+		// setup the label text
 		var label = obj.GetComponent<TextMeshProUGUI>();
 		label.text = $"+{streak}";
 		Destroy(obj, 1.0f); // TODO: add object pooling

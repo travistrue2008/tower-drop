@@ -13,6 +13,7 @@ public class Segment : MonoBehaviour {
 	public const float Height = 0.35f;
 	public const float Radius = 2.0f;
 	public const float FallPower = 10.0f;
+	public const float DestructDuration = 1.0f;
 	public const float Slice = (Mathf.PI * 2.0f) / (float)Resolution;
 	public static float DegreesPerSlice = 360.0f / (float)Resolution;
 	public const string MeshName = "Surface";
@@ -105,7 +106,7 @@ public class Segment : MonoBehaviour {
 		_rigidBody.velocity = direction * FallPower;
 		_rigidBody.angularVelocity = right;
 		_meshCollider.enabled = false;
-		Destroy(gameObject, 2.0f);
+		Destroy(gameObject, DestructDuration);
 	}
 	#endregion
 

@@ -4628,14 +4628,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95600ccbc1ba64dc8af90916df37d4f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isPlaying: 1
-  _camera: {fileID: 20992433903476384}
-  _ringsContainer: {fileID: 4639444801163812}
-  _discardContainer: {fileID: 4620613877726972}
-  _failPopupPrefab: {fileID: 114483868474621476, guid: 553c1da986d319a4c818da058b80cce5,
-    type: 2}
-  _completedPopupPrefab: {fileID: 114546559984657412, guid: 759bbe7234ec61e499c1818d3f7246c8,
-    type: 2}
+  _onClearRing:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: RingEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  _onFail:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  _onFinish:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114912063175412544
 MonoBehaviour:
   m_ObjectHideFlags: 1

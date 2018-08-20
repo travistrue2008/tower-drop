@@ -4,11 +4,13 @@
  * This framework is free to use with no limitations.
 ******************************************************************************/
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using TRUEStudios.Core;
 using TMPro;
 
@@ -30,7 +32,7 @@ namespace TRUEStudios.State {
 		RightThumbstick = 8192,
 	}
 
-	public class InputService : Service {
+	public class GamepadService : Service {
 		#region Constants
 		public const string AKey = "button_a";
 		public const string BKey = "button_b";
@@ -54,6 +56,8 @@ namespace TRUEStudios.State {
 
 		#region Fields
 		[SerializeField]
+		private EventSystem _system;
+		[SerializeField]
 		private TextMeshProUGUI _debugText;
 		[SerializeField]
 		private IntEvent _onButtonPressed = new IntEvent();
@@ -64,10 +68,12 @@ namespace TRUEStudios.State {
 		private int _lastDownPad = 0;
 		private Vector2 _leftAxis = Vector2.zero;
 		private Vector2 _rightAxis = Vector2.zero;
+		private GameObject _target;
 		private bool[] _lastDpad = new bool[] { false, false, false, false }; // UP, DOWN, LEFT, RIGHT
 		#endregion
 
 		#region Properties
+		public EventSystem System { get { return _system; } }
 		public IntEvent OnButtonPressed { get { return _onButtonPressed; } }
 		public IntEvent OnButtonReleased { get { return _onButtonReleased; } }
 		public bool A { get { return Input.GetButton(AKey); } }
@@ -103,20 +109,31 @@ namespace TRUEStudios.State {
 		#endregion
 
 		#region Private Methods
+		protected override void OnInitialize() {
+			_target = System.firstSelectedGameObject;
+		}
+
 		private void Update () {
-			// process button events for presses/releases
+			SyncEventSystem();
 			ProcessButtonPresses();
 			ProcessButtonReleases();
-
-			// update last D-pad state
-			_lastDpad[0] = Up;
-			_lastDpad[1] = Down;
-			_lastDpad[2] = Left;
-			_lastDpad[3] = Right;
+			UpdateDpad();
 
 			// print debug info if provided
 			if (_debugText != null) {
 				PrintDebug();
+			}
+		}
+
+		private void SyncEventSystem () {
+			// check if the target GameObject is out-of-sync with the EventSystem's selected GameObject
+			if (_target != System.currentSelectedGameObject) {
+				// check if no GameObject is currently selected
+				if (System.currentSelectedGameObject == null) {
+					System.SetSelectedGameObject(_target); // re-select the target GameObject
+				} else {
+					_target = System.currentSelectedGameObject; // update the target GameObject
+				}
 			}
 		}
 
@@ -166,6 +183,14 @@ namespace TRUEStudios.State {
 				_onButtonReleased.Invoke(pad);
 				_lastUpPad = pad;
 			}
+		}
+
+		private void UpdateDpad () {
+			// update last D-pad state
+			_lastDpad[0] = Up;
+			_lastDpad[1] = Down;
+			_lastDpad[2] = Left;
+			_lastDpad[3] = Right;
 		}
 
 		private void PrintDebug () {

@@ -14,7 +14,7 @@ namespace TRUEStudios.Tweens {
 			Nearest,
 			Farthest,
 			Clockwise,
-			CounterClockwise
+			CounterClockwise,
 		}
 
 		#region Fields

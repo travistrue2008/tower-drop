@@ -102,10 +102,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4184700253598884}
   - component: {fileID: 114399240016827816}
-  - component: {fileID: 114462746752617280}
   - component: {fileID: 114511645954179314}
   - component: {fileID: 114385801857564408}
-  - component: {fileID: 114891653519039028}
   m_Layer: 31
   m_Name: Services
   m_TagString: Services
@@ -300,17 +298,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27d0d89329cbd46519e596bd3dcb0f29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114462746752617280
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1876707231955350}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24776208340719c42951eea219a2677e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114511645954179314
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -322,6 +309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd8c5e7ae54fe4c4384a64c168d91224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _system: {fileID: 114632135669301052}
   _debugText: {fileID: 114527166414790050}
 --- !u!114 &114527166414790050
 MonoBehaviour:
@@ -514,22 +502,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114891653519039028
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1876707231955350}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be1f5130b583d9247bea7621fb9cab2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _onLevelStarted:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
 --- !u!222 &222221305238816214
 CanvasRenderer:
   m_ObjectHideFlags: 1

@@ -3,211 +3,126 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using TRUEStudios.Core;
 
-using TRUEStudios.State;
-using TMPro;
+[Serializable]
+public class RingEvent : UnityEvent<Ring, int> {}
 
 public class Ball : MonoBehaviour {
 	#region Constants
 	public const int SlamThreshold = 4;
 	public const float MaxDropDistance = 1.0f;
-	public const float MaxRotationSpeed = 180.0f;
 
 	public readonly Vector3 Bounce = new Vector3(0.0f, 4.2f, 0.0f);
 	#endregion
 
 	#region Fields
 	[SerializeField]
-	private bool _isPlaying = true;
-	[SerializeField]
-	private Transform _ringsContainer;
-	[SerializeField]
 	private Transform _discardContainer;
 	[SerializeField]
-	private OptionsPopup _optionsPopup;
+	private IntEvent _onStreakChanged = new IntEvent();
 	[SerializeField]
-	private ResultsPopup _failedLevelPopupPrefab;
+	private RingEvent _onClearRing = new RingEvent();
 	[SerializeField]
-	private ResultsPopup _completedLevelPopupPrefab;
+	private UnityEvent _onFail = new UnityEvent();
 	[SerializeField]
-	private Popup _completedGamePopupPrefab;
-
+	private UnityEvent _onFinish = new UnityEvent();
+	
 	private int _streak = 0;
-	private int _numRingsBroken = 0;
-	private Vector3 _cameraPosition;
-	private InputService _inputService;
-	private PopupService _popupService;
-	private LevelService _levelService;
+	private Vector3 _initialPosition;
 	private Rigidbody _rigidBody;
-	private Ring[] _rings;
+	private TrailRenderer _trailRenderer;
 	#endregion
 
 	#region Properties
-	public int Streak { get { return _streak; } }
+	public IntEvent OnStreakChanged { get { return _onStreakChanged; } }
+	public RingEvent OnClearRing { get { return _onClearRing; } }
+	public UnityEvent OnFail { get { return _onFail; } }
+	public UnityEvent OnFinish { get { return _onFinish; } }
 
-	public int NumRingsBroken {
+	public int Streak {
 		set {
-			// update the field, and set the progress accordingly
-			_numRingsBroken = value;
-			if (_levelService != null && _rings != null) {
-				_levelService.Progress = (float)_numRingsBroken / (float)_rings.Length;
+			if (_streak != value) {
+				_streak = value;
+				_onStreakChanged.Invoke(_streak);
 			}
 		}
 
-		get { return _numRingsBroken; }
-	}
-
-	public bool IsPlaying {
-		set { _isPlaying = value; }
-		get { return _isPlaying; }
+		get { return _streak; }
 	}
 	#endregion
 
 	#region MonoBehaviour Hooks
 	private void Awake () {
-		_cameraPosition = Camera.main.transform.position;
-
+		_initialPosition = transform.position;
 		_rigidBody = GetComponent<Rigidbody>();
-		_rings = _ringsContainer.GetComponentsInChildren<Ring>();
-
-		// HACK: the level needs to be transformed, or the ball won't collide
-		_ringsContainer.Rotate(0.0f, 1.0f, 0.0f);
-		_ringsContainer.Rotate(0.0f, -1.0f, 0.0f);
-	}
-
-	private void Start () {
-		// get services
-		_inputService = Services.Get<InputService>();
-		_popupService = Services.Get<PopupService>();
-		_levelService = Services.Get<LevelService>();
+		_trailRenderer = GetComponent<TrailRenderer>();
 	}
 
 	private void OnEnable () {
-		Services.Get<InputService>().OnButtonPressed.AddListener(OnButtonPressed);
+		_rigidBody.useGravity = true;
+		_trailRenderer.enabled = false;
+		_trailRenderer.Clear();
+		_trailRenderer.enabled = true;
 	}
 
 	private void OnDisable () {
-		var inputService = Services.Get<InputService>();
-		if (inputService != null) {
-			inputService.OnButtonPressed.RemoveListener(OnButtonPressed);
-		}
-	}
-
-	private void Update () {
-		// only control when the user is playing
-		if (_isPlaying) {
-			float delta = -_inputService.LeftAxis.x * MaxRotationSpeed * Time.deltaTime;
-			_ringsContainer.Rotate(0.0f, delta, 0.0f);
-		}
-
-		// check if the camera dropped too far
-		if (Camera.main.transform.position.y - transform.position.y > MaxDropDistance) {
-			_cameraPosition.y = transform.position.y + MaxDropDistance;
-			Camera.main.transform.position = _cameraPosition;
-		}
+		_rigidBody.velocity = Vector3.zero;
+		_rigidBody.useGravity = false;
 	}
 
 	private void OnTriggerEnter (Collider other) {
-		// check if a burst mesh was entered
+		// get the Ring component, and handle based on tag
 		if (other.gameObject.tag == "Burst") {
 			var ring = other.transform.parent.GetComponent<Ring>();
-			BurstRing(ring, false);
+			BurstRing(ring);
 		}
 	}
 
 	private void OnCollisionEnter (Collision collision) {
-		// check if the finish ring was reached
+		// check if the finish object was hit
 		if (collision.gameObject.tag == "Finish") {
-			FinishLevel();
-			return;
+			_onFinish.Invoke();
+			enabled = false;
 		}
 
-		// get the segment
+		// get the ring segment
 		var segment = collision.transform.GetComponent<Segment>();
 		if (segment != null) {
-			// check if the player landed on a hazard
-			if (segment.IsHazard) {
-				FailLevel();
-				return;
-			}
-			
-			// check if the player can slam through the ring
-			if (_streak >= SlamThreshold) {
-				BurstRing(segment.ParentRing, true);
-			}
-
-			// don't bounce if not playing anymore
-			if (_isPlaying) {
-				_rigidBody.velocity = Bounce;
-			}
-
-			_streak = 0;
-		} else {
-			throw new NullReferenceException("No Segment component attached to GameObject");
+			ProcessSegmentCollision(segment);
 		}
 	}
 	#endregion
 
-	#region Event Handlers
-	private void OnButtonPressed (int pad) {
-		// check if the start button was pressed
-		if (_inputService.IsButtonPressed(pad, GamepadButton.Start)) {
-			_popupService.PushPopup<Popup>(_optionsPopup);
-		}
-	}
-
-	private void OnGotoNextLevel () {
-		// attempt to load the next level
-		try {
-			_levelService.GotoNextLevel();
-		} catch (Exception) {
-			// load the "Finished Game" popup if the next level prefab couldn't be found
-			_popupService.PushPopup<Popup>(_completedGamePopupPrefab);
-		}
-	}
-	#endregion
-
-	#region Public Methods
-	public void Stop () {
-		_rigidBody.velocity = Vector3.zero;
-		_rigidBody.useGravity = false;
-		_isPlaying = false;
+	#region Actions
+	public void Reset () {
+		Streak = 0;
+		enabled = true;
+		transform.position = _initialPosition;
+		_trailRenderer.Clear();
 	}
 	#endregion
 
 	#region Private Methods
-	private void BurstRing (Ring ring, bool slam) {
-		// get the Ring component, and burst
+	private void ProcessSegmentCollision (Segment segment) {
+		// reset the bounce to a pre-determined one, and reset the streak
+		_rigidBody.velocity = Bounce;
+		Streak = 0;
+		
+		// check if the segment is a hazard
+		if (segment.IsHazard) {
+			_onFail.Invoke();
+			enabled = false;
+		} else if (Streak >= SlamThreshold) { // check if the streak is large enough to burst its ring
+			BurstRing(segment.ParentRing);
+		}
+	}
+
+	private void BurstRing (Ring ring) {
 		ring.transform.SetParent(_discardContainer);
-		ring.Burst(slam);
-		_levelService.Score += ++_streak; // increment the streak, and then increment the score
-		++NumRingsBroken;
-	}
+		ring.Burst();
 
-	private void FailLevel () {
-		Stop();
-
-		bool updatedScore = _levelService.SubmitScore();
-		var popup = _popupService.PushPopup<ResultsPopup>(_failedLevelPopupPrefab);
-		if (updatedScore) {
-			popup.SetBestScore(_levelService.Score);
-		}
-
-		popup.OnClose.AddListener(_levelService.RestartLevel);
-	}
-
-	private void FinishLevel () {
-		Stop();
-
-		// submit the current score, and instantiate the popup
-		bool updatedScore = _levelService.SubmitScore();
-		var popup = _popupService.PushPopup<ResultsPopup>(_completedLevelPopupPrefab);
-		popup.SetLevel(_levelService.CurrentLevel);
-		if (updatedScore) {
-			popup.SetBestScore(_levelService.Score);
-		}
-
-		popup.OnClose.AddListener(OnGotoNextLevel);
+		_onClearRing.Invoke(ring, ++Streak);
 	}
 	#endregion
 }
