@@ -205,7 +205,6 @@ namespace TRUEStudios.State {
 			PlayerPrefs.DeleteAll();
 			PlayerPrefs.Save();
 		}
-		#endif
 
 		[MenuItem("Tools/Game/Screenshot")]
 		public static void TakeScreenshot () {
@@ -219,6 +218,7 @@ namespace TRUEStudios.State {
 			ScreenCapture.CaptureScreenshot($"Screenshots/{timestamp}.png");
 			Debug.Log("Screenshot saved");
 		}
+		#endif
 		#endregion
 	}
 }

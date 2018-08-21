@@ -40,9 +40,14 @@ public class HUD : MonoBehaviour {
 	#region Actions
 	public void SetLevel (int level) {
 		int bestScore = BestScore.Get(level);
+		bool hasBestScore = (bestScore > 0);
+
 		_currentLevelLabel.text = $"{level}";
 		_nextLevelLabel.text = $"{level + 1}";
-		_bestScoreLabel.text = (bestScore > 0) ? $"Best: {bestScore}" : "";
+		_bestScoreLabel.text = hasBestScore ? $"Best: {bestScore}" : "";
+		if (hasBestScore) {
+			_bestScoreTween.ResetToBegin();
+		}
 	}
 
 	public void SetStreak (int streak) {
@@ -61,12 +66,6 @@ public class HUD : MonoBehaviour {
 	public void SetProgress (float progress) {
 		_size.x = _progressContainer.sizeDelta.x * progress;
 		_fillProgress.sizeDelta = _size;
-	}
-	#endregion
-
-	#region Actions
-	public void Reset () {
-		_bestScoreTween.ResetToBegin();
 	}
 	#endregion
 

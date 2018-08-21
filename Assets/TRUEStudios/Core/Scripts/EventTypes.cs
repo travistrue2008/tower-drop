@@ -12,6 +12,9 @@ using UnityEngine.Events;
 
 namespace TRUEStudios.Core {
 	[Serializable]
+	public class BoolEvent : UnityEvent<bool> {}
+	
+	[Serializable]
 	public class IntEvent : UnityEvent<int> {}
 
 	[Serializable]

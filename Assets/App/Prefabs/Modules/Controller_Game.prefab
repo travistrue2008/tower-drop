@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4905860610714716}
   - component: {fileID: 114028253698130932}
   m_Layer: 0
-  m_Name: GameController
+  m_Name: Controller_Game
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72,6 +72,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4771895177679124}
+  - component: {fileID: 114489902667248114}
   m_Layer: 0
   m_Name: Container_Level
   m_TagString: Untagged
@@ -99,7 +100,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &1920157050219452
 GameObject:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 6
@@ -161,12 +162,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1920157050219452}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 4771895177679124}
-  m_RootOrder: 1
+  m_Father: {fileID: 4905860610714716}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4646482372407336
 Transform:
@@ -193,9 +194,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4934399761240794}
-  - {fileID: 4335362792689028}
   m_Father: {fileID: 4905860610714716}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4905860610714716
 Transform:
@@ -209,6 +209,7 @@ Transform:
   m_Children:
   - {fileID: 4646482372407336}
   - {fileID: 4147584679486482}
+  - {fileID: 4335362792689028}
   - {fileID: 4771895177679124}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -522,9 +523,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _levelContainer: {fileID: 4771895177679124}
-  _failedLevelPopupPrefab: {fileID: 114483868474621476, guid: 553c1da986d319a4c818da058b80cce5,
-    type: 2}
-  _completedLevelPopupPrefab: {fileID: 114546559984657412, guid: 759bbe7234ec61e499c1818d3f7246c8,
+  _levelResultPopupPrefab: {fileID: 114546559984657412, guid: 759bbe7234ec61e499c1818d3f7246c8,
     type: 2}
   _completedGamePopupPrefab: {fileID: 114407574083761810, guid: abaf0913bb4cfaa42814ce5174203f86,
     type: 2}
@@ -556,6 +555,17 @@ MonoBehaviour:
       - m_Target: {fileID: 0}
         m_MethodName: SetLevel
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 114489902667248114}
+        m_MethodName: Reset
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -641,28 +651,12 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: RingEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  _onFail:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 114028253698130932}
-        m_MethodName: FailLevel
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   _onFinish:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 114028253698130932}
         m_MethodName: FinishLevel
-        m_Mode: 1
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -671,8 +665,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+      - m_Target: {fileID: 114489902667248114}
+        m_MethodName: set_IsPlaying
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: TRUEStudios.Core.BoolEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!114 &114149734239710084
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -685,6 +690,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 4147584679486482}
+--- !u!114 &114489902667248114
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1587743667523354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d34070f48a404bc4ca7d4735c1e31e28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!135 &135219297001777950
 SphereCollider:
   m_ObjectHideFlags: 1

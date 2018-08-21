@@ -113,7 +113,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &676650447
+--- !u!1001 &1532141120
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -152,6 +152,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114145343393993896, guid: 4bead237f9a892a459767566694f6940,
+        type: 2}
+      propertyPath: _onStreakChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1969219575}
     - target: {fileID: 114028253698130932, guid: 4bead237f9a892a459767566694f6940,
         type: 2}
       propertyPath: _onLevelStarted.m_PersistentCalls.m_Calls.Array.data[2].m_Target
@@ -165,11 +170,6 @@ Prefab:
     - target: {fileID: 114028253698130932, guid: 4bead237f9a892a459767566694f6940,
         type: 2}
       propertyPath: _onProgressChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1969219575}
-    - target: {fileID: 114145343393993896, guid: 4bead237f9a892a459767566694f6940,
-        type: 2}
-      propertyPath: _onStreakChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1969219575}
     m_RemovedComponents: []
@@ -278,6 +278,16 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114509198635382382, guid: b6622ff21e7094447a05a37f6cc8b067,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114509198635382382, guid: b6622ff21e7094447a05a37f6cc8b067,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 114289077862608882, guid: b6622ff21e7094447a05a37f6cc8b067,
         type: 2}
       propertyPath: m_havePropertiesChanged
@@ -294,16 +304,6 @@ Prefab:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114670765946764234, guid: b6622ff21e7094447a05a37f6cc8b067,
-        type: 2}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114509198635382382, guid: b6622ff21e7094447a05a37f6cc8b067,
-        type: 2}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114509198635382382, guid: b6622ff21e7094447a05a37f6cc8b067,
         type: 2}
       propertyPath: m_isInputParsingRequired
       value: 1

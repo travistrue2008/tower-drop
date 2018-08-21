@@ -9,7 +9,6 @@ using TRUEStudios.State;
 
 public class GameController : MonoBehaviour {
 	#region Constants
-	public const float MaxRotationSpeed = 180.0f;
 	public const string LevelPrefabPath = "Prefabs/Levels";
 	#endregion
 
@@ -17,9 +16,7 @@ public class GameController : MonoBehaviour {
 	[SerializeField]
 	private Transform _levelContainer;
 	[SerializeField]
-	private ResultsPopup _failedLevelPopupPrefab;
-	[SerializeField]
-	private ResultsPopup _completedLevelPopupPrefab;
+	private ResultsPopup _levelResultPopupPrefab;
 	[SerializeField]
 	private Popup _completedGamePopupPrefab;
 	[SerializeField]
@@ -29,6 +26,7 @@ public class GameController : MonoBehaviour {
 	[SerializeField]
 	private FloatEvent _onProgressChanged = new FloatEvent();
 
+	private bool _isPlaying = false;
 	private int _level = 1;
 	private int _score = 0;
 	private int _numRingsCleared = 0;
@@ -36,7 +34,6 @@ public class GameController : MonoBehaviour {
 	private float _progress = 0.0f;
 	private Transform _levelInstance;
 	private PopupService _popupService;
-	private GamepadService _gamepadService;
 	#endregion
 
 	#region Properties
@@ -82,28 +79,7 @@ public class GameController : MonoBehaviour {
 	#region MonoBehaviour Hooks
 	private void Start () {
 		_popupService = Services.Get<PopupService>();
-		_gamepadService = Services.Get<GamepadService>();
 		GotoLevel(1);
-	}
-
-	private void Update () {
-		// only control when the user is playing
-		if (_levelInstance != null) {
-			float delta = -_gamepadService.LeftAxis.x * MaxRotationSpeed * Time.deltaTime;
-			_levelInstance.Rotate(0.0f, delta, 0.0f);
-		}
-	}
-	#endregion
-
-	#region Event Handlers
-	private void OnGotoNextLevel () {
-		// attempt to load the next level
-		try {
-			GotoNextLevel();
-		} catch (Exception) {
-			// load the "Finished Game" popup if the next level prefab couldn't be found
-			_popupService.PushPopup<Popup>(_completedGamePopupPrefab);
-		}
 	}
 	#endregion
 
@@ -124,7 +100,13 @@ public class GameController : MonoBehaviour {
 	}
 
 	public void GotoNextLevel () {
-		GotoLevel(_level + 1);
+		// attempt to load the next level
+		try {
+			GotoLevel(_level + 1);
+		} catch (Exception) {
+			// load the "Finished Game" popup if the next level prefab couldn't be found
+			_popupService.PushPopup<Popup>(_completedGamePopupPrefab);
+		}
 	}
 
 	public void RestartLevel () {
@@ -136,24 +118,19 @@ public class GameController : MonoBehaviour {
 		++NumRingsCleared;
 	}
 
-	public void FailLevel () {
-		bool updatedScore = BestScore.Submit(_score, _level);
-		var popup = _popupService.PushPopup<ResultsPopup>(_failedLevelPopupPrefab);
-		popup.OnClose.AddListener(RestartLevel);
-		if (updatedScore) {
-			popup.SetBestScore(_score);
-		}
-	}
-
-	public void FinishLevel () {
+	public void FinishLevel (bool passed) {
 		// submit the current score, and instantiate the popup
 		bool updatedScore = BestScore.Submit(_score, _level);
-		var popup = _popupService.PushPopup<ResultsPopup>(_completedLevelPopupPrefab);
-		popup.OnClose.AddListener(OnGotoNextLevel);
-		popup.SetLevel(_level);
-		if (updatedScore) {
-			popup.SetBestScore(_score);
+		int scoreResult = updatedScore ? _score : 0;
+		var popup = _popupService.PushPopup<ResultsPopup>(_levelResultPopupPrefab);
+		if (passed) {
+			popup.OnClose.AddListener(GotoNextLevel);
+		} else {
+			popup.OnClose.AddListener(RestartLevel);
 		}
+		
+		popup.Set(passed, _level, scoreResult);
+		_isPlaying = false;
 	}
 	#endregion
 
@@ -182,6 +159,7 @@ public class GameController : MonoBehaviour {
 		// get total number of rings
 		var rings = _levelInstance.GetComponentsInChildren<Ring>();
 		totalRings = rings.Length;
+		_isPlaying = true;
 	}
 	#endregion
 }

@@ -24,9 +24,7 @@ public class Ball : MonoBehaviour {
 	[SerializeField]
 	private RingEvent _onClearRing = new RingEvent();
 	[SerializeField]
-	private UnityEvent _onFail = new UnityEvent();
-	[SerializeField]
-	private UnityEvent _onFinish = new UnityEvent();
+	private BoolEvent _onFinish = new BoolEvent();
 	
 	private int _streak = 0;
 	private Vector3 _initialPosition;
@@ -37,8 +35,7 @@ public class Ball : MonoBehaviour {
 	#region Properties
 	public IntEvent OnStreakChanged { get { return _onStreakChanged; } }
 	public RingEvent OnClearRing { get { return _onClearRing; } }
-	public UnityEvent OnFail { get { return _onFail; } }
-	public UnityEvent OnFinish { get { return _onFinish; } }
+	public BoolEvent OnFinish { get { return _onFinish; } }
 
 	public int Streak {
 		set {
@@ -82,7 +79,7 @@ public class Ball : MonoBehaviour {
 	private void OnCollisionEnter (Collision collision) {
 		// check if the finish object was hit
 		if (collision.gameObject.tag == "Finish") {
-			_onFinish.Invoke();
+			_onFinish.Invoke(true);
 			enabled = false;
 		}
 
@@ -111,7 +108,7 @@ public class Ball : MonoBehaviour {
 		
 		// check if the segment is a hazard
 		if (segment.IsHazard) {
-			_onFail.Invoke();
+			_onFinish.Invoke(false);
 			enabled = false;
 		} else if (Streak >= SlamThreshold) { // check if the streak is large enough to burst its ring
 			BurstRing(segment.ParentRing);
