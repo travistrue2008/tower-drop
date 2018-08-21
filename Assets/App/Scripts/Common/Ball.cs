@@ -72,7 +72,7 @@ public class Ball : MonoBehaviour {
 		// get the Ring component, and handle based on tag
 		if (other.gameObject.tag == "Burst") {
 			var ring = other.transform.parent.GetComponent<Ring>();
-			BurstRing(ring);
+			BurstRing(ring, false);
 		}
 	}
 
@@ -102,22 +102,22 @@ public class Ball : MonoBehaviour {
 
 	#region Private Methods
 	private void ProcessSegmentCollision (Segment segment) {
-		// reset the bounce to a pre-determined one, and reset the streak
-		_rigidBody.velocity = Bounce;
-		Streak = 0;
-		
+		_rigidBody.velocity = Bounce; // reset the bounce to a pre-determined one
+
 		// check if the segment is a hazard
 		if (segment.IsHazard) {
 			_onFinish.Invoke(false);
 			enabled = false;
 		} else if (Streak >= SlamThreshold) { // check if the streak is large enough to burst its ring
-			BurstRing(segment.ParentRing);
+			BurstRing(segment.ParentRing, true);
 		}
+		
+		Streak = 0;
 	}
 
-	private void BurstRing (Ring ring) {
+	private void BurstRing (Ring ring, bool slam) {
 		ring.transform.SetParent(_discardContainer);
-		ring.Burst();
+		ring.Burst(slam);
 
 		_onClearRing.Invoke(ring, ++Streak);
 	}

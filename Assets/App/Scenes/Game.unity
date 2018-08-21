@@ -288,16 +288,6 @@ Prefab:
       propertyPath: m_isInputParsingRequired
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 114289077862608882, guid: b6622ff21e7094447a05a37f6cc8b067,
-        type: 2}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114289077862608882, guid: b6622ff21e7094447a05a37f6cc8b067,
-        type: 2}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 114670765946764234, guid: b6622ff21e7094447a05a37f6cc8b067,
         type: 2}
       propertyPath: m_havePropertiesChanged
@@ -314,6 +304,16 @@ Prefab:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114545488345303792, guid: b6622ff21e7094447a05a37f6cc8b067,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114289077862608882, guid: b6622ff21e7094447a05a37f6cc8b067,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114289077862608882, guid: b6622ff21e7094447a05a37f6cc8b067,
         type: 2}
       propertyPath: m_isInputParsingRequired
       value: 1

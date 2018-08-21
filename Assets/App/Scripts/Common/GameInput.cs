@@ -40,6 +40,12 @@ public class GameInput : MonoBehaviour {
 
 	#region Private Methods
 	private void ProcessMouse (float incrementAngle) {
+		// sync the last position if the mouse is pressed down this frame
+		if (Input.GetMouseButtonDown(0)) {
+			_xLastMouse = Input.mousePosition.x;
+		}
+
+		// 
 		if (Input.GetMouseButton(0)) {
 			float delta = (Input.mousePosition.x - _xLastMouse);
 			transform.Rotate(0.0f, -delta, 0.0f);
