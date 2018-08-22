@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 375b4d971868d154ca70cd84206d212b, type: 3}
+  m_Name: SegmentMeshParameters
+  m_EditorClassIdentifier: 
+  Resolution: 90
+  Radius: 2
+  FallPower: 10
+  DestructDuration: 1
+  PlatformMaterial: {fileID: 2100000, guid: 247d7f82b16b1e745b0e1d1b9b375c73, type: 2}
+  HazardMaterial: {fileID: 2100000, guid: 25c0ea9d9f250674e8678b2325158412, type: 2}
+  SlamMaterial: {fileID: 2100000, guid: daedb296cdaabc14b8406c0ab140460a, type: 2}
+  _height: 0.35
+  _heightOffset: {x: 0, y: -0.35, z: 0}

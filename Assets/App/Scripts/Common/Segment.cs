@@ -9,16 +9,6 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer))]
 public class Segment : MonoBehaviour {
 	#region Constants
-	public const int Resolution = 90;
-	public const float Height = 0.35f;
-	public const float Radius = 2.0f;
-	public const float FallPower = 10.0f;
-	public const float DestructDuration = 1.0f;
-	public const float Slice = (Mathf.PI * 2.0f) / (float)Resolution;
-	public static float DegreesPerSlice = 360.0f / (float)Resolution;
-	public const string MeshName = "Surface";
-
-	private readonly Vector3 HeightOffset = new Vector3(0.0f, -Height, 0.0f);
 	private readonly int[] CapIndices = new int[] {
 		0, 1, 2, 0, 2, 3, // start cap
 		5, 4, 7, 5, 7, 6, // end cap
@@ -31,11 +21,7 @@ public class Segment : MonoBehaviour {
 	[SerializeField]
 	private int _span = 90;
 	[SerializeField]
-	private Material _platformMaterial;
-	[SerializeField]
-	private Material _hazardMaterial;
-	[SerializeField]
-	private Material _slamMaterial;
+	private SegmentMeshParameters _parameters;
 
 	private Rigidbody _rigidBody = null;
 	private MeshFilter _meshFilter = null;
@@ -51,7 +37,7 @@ public class Segment : MonoBehaviour {
 		set {
 			_isHazard = value;
 			if (_meshRenderer != null) {
-				_meshRenderer.material = _isHazard ? _hazardMaterial : _platformMaterial;
+				_meshRenderer.material = _isHazard ? _parameters.HazardMaterial : _parameters.PlatformMaterial;
 			}
 		}
 
@@ -60,7 +46,7 @@ public class Segment : MonoBehaviour {
 
 	public int Span {
 		set {
-			_span = Mathf.Clamp(value, 1, Resolution);
+			_span = Mathf.Clamp(value, 1, _parameters.Resolution);
 			BuildMesh();
 		}
 
@@ -76,7 +62,7 @@ public class Segment : MonoBehaviour {
 
 		// build the mesh
 		var mesh = new Mesh();
-		mesh.name = MeshName;
+		mesh.name = SegmentMeshParameters.MeshName;
 		_meshFilter.sharedMesh = _meshCollider.sharedMesh = mesh;
 		BuildMesh();
 	}
@@ -93,20 +79,20 @@ public class Segment : MonoBehaviour {
 
 		// change the material if slammed
 		if (slammed) {
-			_meshRenderer.material = _slamMaterial;
+			_meshRenderer.material = _parameters.SlamMaterial;
 		}
 
 		// attach the rigid body
 		_rigidBody = gameObject.AddComponent<Rigidbody>();
-		float angle = ((((float)_span * DegreesPerSlice) / 2.0f) + transform.eulerAngles.y) * Mathf.Deg2Rad;
+		float angle = ((((float)_span * _parameters.DegreesPerSlice) / 2.0f) + transform.eulerAngles.y) * Mathf.Deg2Rad;
 		var direction = new Vector3(Mathf.Cos(angle), 0.0f, -Mathf.Sin(angle));
 		var right = Vector3.Cross(direction, Vector3.up);
 
 		// set velocities, and destroy GameObjects
-		_rigidBody.velocity = direction * FallPower;
+		_rigidBody.velocity = direction * _parameters.FallPower;
 		_rigidBody.angularVelocity = right;
 		_meshCollider.enabled = false;
-		Destroy(gameObject, DestructDuration);
+		Destroy(gameObject, _parameters.DestructDuration);
 	}
 	#endregion
 
@@ -135,16 +121,16 @@ public class Segment : MonoBehaviour {
 	private void SetupCaps (Vector3[] positions, int[] indices) {
 		positions[0] = GetPosition(0, false);     // start-upper-rim
 		positions[1] = Vector3.zero;              // start-upper-middle
-		positions[2] = HeightOffset;              // start-lower-middle
+		positions[2] = _parameters.HeightOffset;  // start-lower-middle
 		positions[3] = GetPosition(0, true);      // start-lower-rim
 
 		positions[4] = GetPosition(_span, false); // end-upper-rim
 		positions[5] = Vector3.zero;              // end-upper-middle
-		positions[6] = HeightOffset;              // end-lower-middle
+		positions[6] = _parameters.HeightOffset;  // end-lower-middle
 		positions[7] = GetPosition(_span, true);  // end-lower-rim
 
 		positions[8] = Vector3.zero;              // upper-middle
-		positions[9] = HeightOffset;              // lower-middle
+		positions[9] = _parameters.HeightOffset;  // lower-middle
 		Array.Copy(CapIndices, indices, CapIndices.Length);
 	}
 
@@ -184,10 +170,10 @@ public class Segment : MonoBehaviour {
 	}
 
 	private Vector3 GetPosition (int index, bool lower) {
-		float angle = (float)index * Slice;
+		float angle = (float)index * _parameters.Slice;
 		var unitPosition = new Vector3(Mathf.Cos(angle), 0.0f, -Mathf.Sin(angle));
-		var position = unitPosition * Radius;
-		return lower ? (position + HeightOffset) : position;
+		var position = unitPosition * _parameters.Radius;
+		return lower ? (position + _parameters.HeightOffset) : position;
 	}
 	#endregion
 }

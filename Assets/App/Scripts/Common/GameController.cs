@@ -26,7 +26,6 @@ public class GameController : MonoBehaviour {
 	[SerializeField]
 	private FloatEvent _onProgressChanged = new FloatEvent();
 
-	private bool _isPlaying = false;
 	private int _level = 1;
 	private int _score = 0;
 	private int _numRingsCleared = 0;
@@ -130,7 +129,6 @@ public class GameController : MonoBehaviour {
 		}
 		
 		popup.Set(passed, _level, scoreResult);
-		_isPlaying = false;
 	}
 	#endregion
 
@@ -159,7 +157,6 @@ public class GameController : MonoBehaviour {
 		// get total number of rings
 		var rings = _levelInstance.GetComponentsInChildren<Ring>();
 		totalRings = rings.Length;
-		_isPlaying = true;
 	}
 	#endregion
 }

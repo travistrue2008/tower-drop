@@ -55,7 +55,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4623200557439734}
   - component: {fileID: 114759077879971150}
-  - component: {fileID: 114295456456312540}
   - component: {fileID: 114457216485848340}
   - component: {fileID: 114039917516849196}
   m_Layer: 31
@@ -243,17 +242,6 @@ MonoBehaviour:
   _stackBlockerImage: {fileID: 114346062066678888}
   _transitionBlockerImage: {fileID: 114559030830106866}
   _popupSpawn: {fileID: 224698724303665188}
---- !u!114 &114295456456312540
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1432595166719424}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24776208340719c42951eea219a2677e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114346062066678888
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -292,7 +280,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd8c5e7ae54fe4c4384a64c168d91224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _system: {fileID: 0}
   _debugText: {fileID: 114965948945901658}
+  _onButtonPressed:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TRUEStudios.Core.IntEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  _onButtonReleased:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TRUEStudios.Core.IntEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!114 &114524515828378844
 MonoBehaviour:
   m_ObjectHideFlags: 1
