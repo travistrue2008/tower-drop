@@ -19,10 +19,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 224362694312445014}
+  - component: {fileID: 114593328487717046}
   - component: {fileID: 222577945565680466}
   - component: {fileID: 114418306041932434}
-  - component: {fileID: 114934113161061680}
-  - component: {fileID: 114544737273637382}
+  - component: {fileID: 114162606379097028}
+  - component: {fileID: 114129178083645220}
   m_Layer: 5
   m_Name: Label_Streak
   m_TagString: Untagged
@@ -30,6 +31,145 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &114129178083645220
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1448861515452336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1056364272, guid: 189fd0977f1e2ec45b028cdadffe9d6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _loopMode: 0
+  _isPlaying: 1
+  _isForward: 1
+  _numIterations: 0
+  _duration: 1
+  _delay: 0
+  _distributionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _onPlay:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  _onFinish:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  _onIterate:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  _onUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TRUEStudios.Foundation.Events.FloatEvent, Foundation, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  _onProgress:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TRUEStudios.Foundation.Events.FloatEvent, Foundation, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  _begin: 1
+  _end: 0
+  _spriteRenderer: {fileID: 0}
+  _graphic: {fileID: 114418306041932434}
+--- !u!114 &114162606379097028
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1448861515452336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 619660145, guid: 189fd0977f1e2ec45b028cdadffe9d6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _loopMode: 0
+  _isPlaying: 1
+  _isForward: 1
+  _numIterations: 0
+  _duration: 0.75
+  _delay: 0
+  _distributionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _onPlay:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  _onFinish:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  _onIterate:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  _onUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TRUEStudios.Foundation.Events.FloatEvent, Foundation, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  _onProgress:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TRUEStudios.Foundation.Events.FloatEvent, Foundation, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  _begin: {x: 0, y: -224, z: 0}
+  _end: {x: 0, y: 0, z: 0}
+  _transformSpace: 0
 --- !u!114 &114418306041932434
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -143,7 +283,7 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &114544737273637382
+--- !u!114 &114593328487717046
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -151,141 +291,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1448861515452336}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40d176b0eb365475b9f510fabaa46a4d, type: 3}
+  m_Script: {fileID: 11500000, guid: 05e670a461ddcb54a9d7c0ee8267782a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _awakeTarget: 0
-  _loopMode: 0
-  _state: 1
-  _playingForward: 1
-  _numIterations: 0
-  _duration: 1
-  _delay: 0
-  _target: {fileID: 0}
-  _distributionCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 2.3332314
-      outSlope: 2.3332314
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.10833335
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _onPlay:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  _onFinish:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  _onIterate:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  _onUpdate:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: TRUEStudios.Tweens.TweenEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  _onProgress:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: TRUEStudios.Tweens.TweenEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  _begin: 1
-  _end: 0
-  _spriteRenderer: {fileID: 0}
-  _graphic: {fileID: 114418306041932434}
---- !u!114 &114934113161061680
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1448861515452336}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2eb7661cf94e4121ac372d6cc500efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _awakeTarget: 0
-  _loopMode: 0
-  _state: 1
-  _playingForward: 1
-  _numIterations: 0
-  _duration: 1
-  _delay: 0
-  _target: {fileID: 0}
-  _distributionCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _onPlay:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  _onFinish:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  _onIterate:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  _onUpdate:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: TRUEStudios.Tweens.TweenEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  _onProgress:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: TRUEStudios.Tweens.TweenEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  _begin: {x: 0, y: -224, z: 0}
-  _end: {x: 0, y: -96, z: 0}
-  _transformSpace: 0
+  _streakReference:
+    UseConstant: 0
+    _constantValue: 0
+    _variable: {fileID: 11400000, guid: 6e202910493738a4b9ac677d80481327, type: 2}
+    _onChange:
+      m_PersistentCalls:
+        m_Calls: []
+      m_TypeName: TRUEStudios.Foundation.Events.IntEvent, Foundation, Version=1.0.0.0,
+        Culture=neutral, PublicKeyToken=null
 --- !u!222 &222577945565680466
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -306,8 +323,8 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -224}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -192}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

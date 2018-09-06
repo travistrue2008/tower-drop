@@ -95,7 +95,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a76290ae59f5b4040b7eea10b9cd0a1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hazard: 0
+  _isHazard: 0
   _span: 90
-  _platformMaterial: {fileID: 2100000, guid: 247d7f82b16b1e745b0e1d1b9b375c73, type: 2}
-  _hazardMaterial: {fileID: 2100000, guid: 25c0ea9d9f250674e8678b2325158412, type: 2}
+  _parameters: {fileID: 11400000, guid: 63f28ffed3f9492409f3b3bd3e85cf04, type: 2}

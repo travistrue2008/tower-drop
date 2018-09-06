@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TRUEStudios.State;
+using TRUEStudios.Foundation.Input;
 
 public class GameInput : MonoBehaviour {
 	#region Constants
@@ -9,8 +9,10 @@ public class GameInput : MonoBehaviour {
 	#endregion
 
 	#region Fields
+	[SerializeField]
+	private Gamepad _gamepad;
+	
 	private float _xLastMouse;
-	private GamepadService _gamepadService;
 	#endregion
 
 	#region Properties
@@ -18,10 +20,6 @@ public class GameInput : MonoBehaviour {
 	#endregion
 
 	#region MonoBehaviour Hooks
-	private void Start () {
-		_gamepadService = Services.Get<GamepadService>();
-	}
-
 	private void Update () {
 		if (!IsPlaying) { return; }
 		float frameIncrementAngle = MaxRotationSpeed * Time.deltaTime;
@@ -64,7 +62,7 @@ public class GameInput : MonoBehaviour {
 
 	private void ProcessGamepad (float incrementAngle) {
 		// handle Gamepad input
-		float delta = _gamepadService.LeftAxis.x * incrementAngle;
+		float delta = _gamepad.LeftAxis.x * incrementAngle;
 		if (delta != 0.0f) {
 			transform.Rotate(0.0f, delta, 0.0f);
 		}

@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4905860610714716}
   - component: {fileID: 114028253698130932}
+  - component: {fileID: 114927199631090610}
   m_Layer: 0
   m_Name: Controller_Game
   m_TagString: Untagged
@@ -184,46 +185,58 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _levelContainer: {fileID: 4771895177679124}
-  _levelResultPopupPrefab: {fileID: 114546559984657412, guid: 759bbe7234ec61e499c1818d3f7246c8,
-    type: 2}
-  _completedGamePopupPrefab: {fileID: 114407574083761810, guid: abaf0913bb4cfaa42814ce5174203f86,
-    type: 2}
+  _levelReference:
+    UseConstant: 0
+    _constantValue: 0
+    _variable: {fileID: 11400000, guid: eb61d97358af65444ba1719291538e50, type: 2}
+    _onChange:
+      m_PersistentCalls:
+        m_Calls: []
+      m_TypeName: TRUEStudios.Foundation.Events.IntEvent, Foundation, Version=1.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+  _scoreReference:
+    UseConstant: 0
+    _constantValue: 0
+    _variable: {fileID: 11400000, guid: 6d20ecad3ba6dd9408e8ef983bf9064d, type: 2}
+    _onChange:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 0}
+          m_MethodName: Set
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: TRUEStudios.Foundation.Events.IntEvent, Foundation, Version=1.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+  _progressReference:
+    UseConstant: 0
+    _constantValue: 0
+    _variable: {fileID: 11400000, guid: f5269b8adda5eeb4b8a03ce4fc94af2a, type: 2}
+    _onChange:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 0}
+          m_MethodName: set_value
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: TRUEStudios.Foundation.Events.FloatEvent, Foundation, Version=1.0.0.0,
+        Culture=neutral, PublicKeyToken=null
   _onLevelStarted:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: Reset
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_MethodName: Reset
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_MethodName: SetLevel
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 114489902667248114}
         m_MethodName: Reset
         m_Mode: 1
@@ -235,13 +248,30 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: TRUEStudios.Core.IntEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  _onScoreChanged:
-    m_PersistentCalls:
-      m_Calls:
       - m_Target: {fileID: 0}
-        m_MethodName: SetScore
+        m_MethodName: Reset
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_MethodName: Reset
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_MethodName: Set
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -251,13 +281,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: TRUEStudios.Core.IntEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  _onProgressChanged:
-    m_PersistentCalls:
-      m_Calls:
       - m_Target: {fileID: 0}
-        m_MethodName: SetProgress
+        m_MethodName: Set
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -267,8 +292,25 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: TRUEStudios.Core.FloatEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: TRUEStudios.Foundation.Events.IntEvent, Foundation, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  _onGameFinished:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_MethodName: PushPopup
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 114050081539542106, guid: abaf0913bb4cfaa42814ce5174203f86,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: TRUEStudios.Foundation.UI.Popup, Foundation
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114489902667248114
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -280,3 +322,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d34070f48a404bc4ca7d4735c1e31e28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gamepad: {fileID: 11400000, guid: bffcb1308fabc5a409b54b9c7f011ea0, type: 2}
+--- !u!114 &114927199631090610
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1255666998775710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1795581791, guid: 189fd0977f1e2ec45b028cdadffe9d6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hub: {fileID: 11400000, guid: 432f57c44eabb6e48b9ba9ccf6779a88, type: 2}
+  _onResponse:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 114028253698130932}
+        m_MethodName: FinishLevel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: TRUEStudios.Foundation.Events.BoolEvent, Foundation, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null

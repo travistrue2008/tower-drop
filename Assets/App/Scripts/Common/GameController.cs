@@ -3,9 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
-using TRUEStudios.Core;
-using TRUEStudios.State;
+using TRUEStudios.Foundation.Core;
+using TRUEStudios.Foundation.Events;
+using TRUEStudios.Foundation.UI;
+using TRUEStudios.Foundation.Variables;
 
 public class GameController : MonoBehaviour {
 	#region Constants
@@ -16,59 +17,29 @@ public class GameController : MonoBehaviour {
 	[SerializeField]
 	private Transform _levelContainer;
 	[SerializeField]
-	private ResultsPopup _levelResultPopupPrefab;
+	private IntReference _levelReference;
 	[SerializeField]
-	private Popup _completedGamePopupPrefab;
+	private IntReference _scoreReference;
+	[SerializeField]
+	private FloatReference _progressReference;
 	[SerializeField]
 	private IntEvent _onLevelStarted = new IntEvent();
 	[SerializeField]
-	private IntEvent _onScoreChanged = new IntEvent();
-	[SerializeField]
-	private FloatEvent _onProgressChanged = new FloatEvent();
+	private UnityEvent _onGameFinished = new UnityEvent();
 
-	private int _level = 1;
-	private int _score = 0;
 	private int _numRingsCleared = 0;
-	private int totalRings = 0;
-	private float _progress = 0.0f;
+	private int _totalRings = 0;
 	private Transform _levelInstance;
-	private PopupService _popupService;
 	#endregion
 
 	#region Properties
-	public int Level { get { return _level; } }
 	public IntEvent OnLevelStarted { get { return _onLevelStarted; } }
-	public IntEvent OnScoreChanged { get { return _onScoreChanged; } }
-	public FloatEvent OnProgressChanged { get { return _onProgressChanged; } }
-
-	public int Score {
-		set {
-			int v = Mathf.Max(0, value);
-			if (_score != v) {
-				_score = v;
-				_onScoreChanged.Invoke(_score);
-			}
-		}
-
-		get { return _score; }
-	}
-
-	public float Progress {
-		set {
-			float v = Mathf.Clamp01(value);
-			if (_progress != v) {
-				_progress = v;
-				_onProgressChanged.Invoke(_progress);
-			}
-		}
-
-		get { return _progress; }
-	}
+	public UnityEvent OnGameFinished { get { return _onGameFinished; } }
 
 	public int NumRingsCleared {
 		set {
 			_numRingsCleared = value;
-			Progress = (float)_numRingsCleared / (float)totalRings;
+			_progressReference.Value = (float)_numRingsCleared / (float)_totalRings;
 		}
 
 		get { return _numRingsCleared; }
@@ -76,9 +47,8 @@ public class GameController : MonoBehaviour {
 	#endregion
 
 	#region MonoBehaviour Hooks
-	private void Start () {
-		_popupService = Services.Get<PopupService>();
-		GotoLevel(1);
+	private void Awake () {
+		GotoLevel(_levelReference.Value);
 	}
 	#endregion
 
@@ -86,49 +56,43 @@ public class GameController : MonoBehaviour {
 	public void GotoLevel (int level) {
 		// validate level
 		if (level < 1) {
-			throw new ArgumentException("level must be > 1");
+			throw new ArgumentException("level must be >= 1");
 		}
 
 		// reset the score and level
-		Score = 0;
-		Progress = 0.0f;
-		_level = level;
+		_numRingsCleared = 0;
+		_scoreReference.Value = 0;
+		_levelReference.Value = level;
+		_progressReference.Value = 0.0f;
 
-		LoadLevel(_level);
-		_onLevelStarted.Invoke(_level);
+		LoadLevel(_levelReference.Value);
+		_onLevelStarted.Invoke(_levelReference.Value);
 	}
 
 	public void GotoNextLevel () {
 		// attempt to load the next level
 		try {
-			GotoLevel(_level + 1);
+			GotoLevel(_levelReference.Value + 1);
 		} catch (Exception) {
-			// load the "Finished Game" popup if the next level prefab couldn't be found
-			_popupService.PushPopup<Popup>(_completedGamePopupPrefab);
+			_onGameFinished.Invoke();
 		}
 	}
 
 	public void RestartLevel () {
-		GotoLevel(_level);
-	}
-
-	public void ClearRing (Ring ring, int streak) {
-		Score += streak;
-		++NumRingsCleared;
+		GotoLevel(_levelReference.Value);
 	}
 
 	public void FinishLevel (bool passed) {
-		// submit the current score, and instantiate the popup
-		bool updatedScore = BestScore.Submit(_score, _level);
-		int scoreResult = updatedScore ? _score : 0;
-		var popup = _popupService.PushPopup<ResultsPopup>(_levelResultPopupPrefab);
 		if (passed) {
-			popup.OnClose.AddListener(GotoNextLevel);
+			GotoNextLevel();
 		} else {
-			popup.OnClose.AddListener(RestartLevel);
+			RestartLevel();
 		}
-		
-		popup.Set(passed, _level, scoreResult);
+	}
+
+	public void ClearRing (Ring ring, int streak) {
+		_scoreReference.Value += streak;
+		++NumRingsCleared;
 	}
 	#endregion
 
@@ -156,7 +120,7 @@ public class GameController : MonoBehaviour {
 
 		// get total number of rings
 		var rings = _levelInstance.GetComponentsInChildren<Ring>();
-		totalRings = rings.Length;
+		_totalRings = rings.Length;
 	}
 	#endregion
 }

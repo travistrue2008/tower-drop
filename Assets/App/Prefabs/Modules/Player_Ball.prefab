@@ -215,22 +215,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _discardContainer: {fileID: 0}
-  _onStreakChanged:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: SetStreak
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: TRUEStudios.Core.IntEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+  _streakReference:
+    UseConstant: 0
+    _constantValue: 0
+    _variable: {fileID: 11400000, guid: 6e202910493738a4b9ac677d80481327, type: 2}
+    _onChange:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 0}
+          m_MethodName: Spawn
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: TRUEStudios.Foundation.Events.IntEvent, Foundation, Version=1.0.0.0,
+        Culture=neutral, PublicKeyToken=null
   _onClearRing:
     m_PersistentCalls:
       m_Calls:
@@ -250,17 +254,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_MethodName: FinishLevel
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
         m_MethodName: set_IsPlaying
         m_Mode: 6
         m_Arguments:
@@ -271,8 +264,31 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: TRUEStudios.Core.BoolEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+      - m_Target: {fileID: 11400000, guid: 673d26426f1f6d94799ac0685ef51f5d, type: 2}
+        m_MethodName: set_Value
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_MethodName: PushPopup
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 114546559984657412, guid: 759bbe7234ec61e499c1818d3f7246c8,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: TRUEStudios.Foundation.UI.Popup, Foundation
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: TRUEStudios.Foundation.Events.BoolEvent, Foundation, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!135 &135334951621991366
 SphereCollider:
   m_ObjectHideFlags: 1

@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using TRUEStudios.Core;
+using TRUEStudios.Foundation.Events;
+using TRUEStudios.Foundation.Variables;
 
 [Serializable]
 public class RingEvent : UnityEvent<Ring, int> {}
@@ -20,33 +21,20 @@ public class Ball : MonoBehaviour {
 	[SerializeField]
 	private Transform _discardContainer;
 	[SerializeField]
-	private IntEvent _onStreakChanged = new IntEvent();
+	private IntReference _streakReference;
 	[SerializeField]
 	private RingEvent _onClearRing = new RingEvent();
 	[SerializeField]
 	private BoolEvent _onFinish = new BoolEvent();
 	
-	private int _streak = 0;
 	private Vector3 _initialPosition;
 	private Rigidbody _rigidBody;
 	private TrailRenderer _trailRenderer;
 	#endregion
 
 	#region Properties
-	public IntEvent OnStreakChanged { get { return _onStreakChanged; } }
 	public RingEvent OnClearRing { get { return _onClearRing; } }
 	public BoolEvent OnFinish { get { return _onFinish; } }
-
-	public int Streak {
-		set {
-			if (_streak != value) {
-				_streak = value;
-				_onStreakChanged.Invoke(_streak);
-			}
-		}
-
-		get { return _streak; }
-	}
 	#endregion
 
 	#region MonoBehaviour Hooks
@@ -93,8 +81,8 @@ public class Ball : MonoBehaviour {
 
 	#region Actions
 	public void Reset () {
-		Streak = 0;
 		enabled = true;
+		_streakReference.Value = 0;
 		transform.position = _initialPosition;
 		_trailRenderer.Clear();
 	}
@@ -108,18 +96,18 @@ public class Ball : MonoBehaviour {
 		if (segment.IsHazard) {
 			_onFinish.Invoke(false);
 			enabled = false;
-		} else if (Streak >= SlamThreshold) { // check if the streak is large enough to burst its ring
+		} else if (_streakReference.Value >= SlamThreshold) { // check if the streak is large enough to burst its ring
 			BurstRing(segment.ParentRing, true);
 		}
 		
-		Streak = 0;
+		_streakReference.Value = 0;
 	}
 
 	private void BurstRing (Ring ring, bool slam) {
 		ring.transform.SetParent(_discardContainer);
 		ring.Burst(slam);
 
-		_onClearRing.Invoke(ring, ++Streak);
+		_onClearRing.Invoke(ring, ++_streakReference.Value);
 	}
 	#endregion
 }

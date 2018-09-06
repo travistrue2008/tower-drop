@@ -22,7 +22,6 @@ GameObject:
   - component: {fileID: 222666337156638134}
   - component: {fileID: 114659206526618584}
   - component: {fileID: 114835500981063510}
-  - component: {fileID: 114291202492821874}
   m_Layer: 5
   m_Name: Button_Options
   m_TagString: Untagged
@@ -93,8 +92,7 @@ GameObject:
   - component: {fileID: 222187365627280936}
   - component: {fileID: 114920719292675238}
   - component: {fileID: 114194773696337128}
-  - component: {fileID: 114749138126001798}
-  - component: {fileID: 114292855257365404}
+  - component: {fileID: 114225676638075190}
   m_Layer: 5
   m_Name: Button_Play
   m_TagString: Untagged
@@ -383,7 +381,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114749138126001798}
+      - m_Target: {fileID: 114225676638075190}
         m_MethodName: GotoScene
         m_Mode: 1
         m_Arguments:
@@ -394,23 +392,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: eb61d97358af65444ba1719291538e50, type: 2}
+        m_MethodName: set_Value
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &114291202492821874
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1039846648874180}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c312399a7dd5c4f468021fbc6b40120a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _attemptGC: 0
-  _popupPrefab: {fileID: 114132555962924634, guid: f94f1721c91b6b6499554de023959822,
-    type: 2}
---- !u!114 &114292855257365404
+--- !u!114 &114225676638075190
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -418,9 +413,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1303837798434586}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 096ae29b841e66a42a9837b554a7477c, type: 3}
+  m_Script: {fileID: 2143745980, guid: 189fd0977f1e2ec45b028cdadffe9d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _sceneName: Game
+  _transition: {fileID: 114285292545042820, guid: 1284b422f969eb94d9deb4e5e4e6d3c1,
+    type: 2}
 --- !u!114 &114333430992397998
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -736,18 +734,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114749138126001798
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1303837798434586}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0e429169b67f884aa40e9aeeb22f614, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _sceneName: Game
 --- !u!114 &114835500981063510
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -787,12 +773,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114291202492821874}
-        m_MethodName: Show
-        m_Mode: 1
+      - m_Target: {fileID: 0}
+        m_MethodName: PushPopup
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 114132555962924634, guid: f94f1721c91b6b6499554de023959822,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: TRUEStudios.Foundation.UI.Popup, Foundation
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
