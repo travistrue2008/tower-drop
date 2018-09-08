@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Burst
   - Services
+  - EditorCamera
   layers:
   - Default
   - TransparentFX
