@@ -6,10 +6,9 @@ using System.Collections.Generic;
 public class BuiltInResourcesWindow : EditorWindow
 {
     [MenuItem( "Window/Built-in styles and icons" )] 
-    public static void ShowWindow()
+    public static void Open()
     {
-        BuiltInResourcesWindow w = (BuiltInResourcesWindow)EditorWindow.GetWindow<BuiltInResourcesWindow>();
-        w.Show();
+        EditorWindow.GetWindow<BuiltInResourcesWindow>();
     }
  
     private struct Drawing

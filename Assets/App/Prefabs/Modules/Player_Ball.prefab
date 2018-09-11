@@ -20,6 +20,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4934462122352658}
   - component: {fileID: 114962315803292424}
+  - component: {fileID: 114302874920383030}
+  - component: {fileID: 114457355121109958}
   - component: {fileID: 33236568687268602}
   - component: {fileID: 23370587480920396}
   - component: {fileID: 135334951621991366}
@@ -203,6 +205,51 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
+--- !u!114 &114302874920383030
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1127920400060112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1611449795, guid: 189fd0977f1e2ec45b028cdadffe9d6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _format: '{0}'
+  _onSet:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TRUEStudios.Foundation.Events.StringEvent, Foundation, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+--- !u!114 &114457355121109958
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1127920400060112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1795581791, guid: 189fd0977f1e2ec45b028cdadffe9d6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hub: {fileID: 11400000, guid: 99ad280d8afd6314c9d9307c786c16a9, type: 2}
+  _onResponse:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 114962315803292424}
+        m_MethodName: set_enabled
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: TRUEStudios.Foundation.Events.BoolEvent, Foundation, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114962315803292424
 MonoBehaviour:
   m_ObjectHideFlags: 1

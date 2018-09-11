@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e22db586479ba2247a2d0617178631bd, type: 3}
-  m_Name: MeshSegmentProfile_Default
+  m_Name: SegmentMeshProfile_Default
   m_EditorClassIdentifier: 
   PlatformMaterial: {fileID: 2100000, guid: 247d7f82b16b1e745b0e1d1b9b375c73, type: 2}
   HazardMaterial: {fileID: 2100000, guid: 25c0ea9d9f250674e8678b2325158412, type: 2}
